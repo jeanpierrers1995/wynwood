@@ -79,3 +79,9 @@ LOGGING = {
         },
     },
 }
+
+SESSION_COOKIE_DOMAIN = 'wynwood.jean-rivas.com'
+CSRF_COOKIE_DOMAIN = 'wynwood.jean-rivas.com'
+
+SESSION_COOKIE_NAME = 'wynwood_sessionid'
+CSRF_COOKIE_NAME = 'wynwood_csrftoken'
