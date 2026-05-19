@@ -1,0 +1,201 @@
+{% load i18n %}
+<div style="max-width: 1100px; margin: 0 auto;">
+  <form class="search-bar" method="get" action="{% url 'properties:search' %}" role="search">
+    <style>
+      .search-bar {
+        max-width: 1100px;
+        margin: 0 auto;
+        border-radius: 100px;
+        padding: 0.5rem 0.6rem 0.5rem 1rem;
+        display: flex;
+        align-items: center;
+        background: #fff;
+        box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+        border: 1px solid #eaeaea;
+        position: relative;
+        z-index: 10;
+      }
+      .search-field-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 0.6rem 1rem;
+        flex: 1;
+        cursor: pointer;
+        border-radius: 50px;
+        transition: background 0.2s ease;
+        min-width: 0;
+      }
+      .search-field-container:hover {
+        background: #f5f5f5;
+      }
+      .search-label {
+        font-family: var(--font-body);
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #000;
+        margin-bottom: 0.15rem;
+        cursor: inherit;
+      }
+      .search-input {
+        border: none;
+        background: transparent;
+        font-size: 0.95rem;
+        outline: none;
+        width: 100%;
+        font-weight: 400;
+        color: #333;
+        font-family: var(--font-body);
+        padding: 0;
+        cursor: pointer;
+      }
+      select.search-input {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+      }
+      input[type="date"].search-input {
+        cursor: pointer;
+      }
+      input[type="date"]::-webkit-inner-spin-button,
+      input[type="date"]::-webkit-calendar-picker-indicator {
+          cursor: pointer;
+          opacity: 0.6;
+      }
+      .search-input::placeholder {
+        color: #777;
+      }
+      .search-divider {
+        width: 1px;
+        height: 40px;
+        background: #ddd;
+        margin: 0 0.2rem;
+      }
+      .search-btn {
+        background: #000;
+        color: #fff;
+        border-radius: 100px;
+        padding: 0.8rem 2rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1rem;
+        font-family: var(--font-body);
+        transition: background 0.2s ease;
+        margin-left: 0.5rem;
+      }
+      .search-btn:hover {
+        background: #333;
+      }
+      .search-btn i {
+        font-size: 1rem;
+        -webkit-text-stroke: 0.5px;
+      }
+      @media (max-width: 991px) {
+        .search-bar {
+          flex-direction: column;
+          border-radius: 20px;
+          padding: 1rem;
+          align-items: stretch;
+          gap: 0.5rem;
+        }
+        .search-divider {
+          display: none;
+        }
+        .search-field-container {
+          padding: 0.8rem 1.2rem;
+          background: #f9f9f9;
+        }
+        .search-btn {
+          margin-left: 0;
+          margin-top: 0.5rem;
+          justify-content: center;
+          padding: 1rem;
+        }
+      }
+    </style>
+    
+    <label class="search-field-container" for="id_city">
+      <span class="search-label">{% trans 'Ciudad o destino' %}</span>
+      <select id="id_city" name="city" class="search-input">
+        <option value="" {% if not search_city %}selected{% endif %}>{% trans 'Todos los destinos' %}</option>
+        {% if destinations %}
+          {% for dest in destinations %}
+            <option value="{{ dest.name }}" {% if search_city == dest.name %}selected{% endif %}>{{ dest.name }}</option>
+          {% endfor %}
+        {% endif %}
+      </select>
+    </label>
+    
+    <div class="search-divider"></div>
+    
+    <label class="search-field-container" for="id_district">
+      <span class="search-label">{% trans 'Distrito' %}</span>
+      <select id="id_district" name="district" class="search-input">
+        <option value="">{% trans 'Todos los distritos' %}</option>
+      </select>
+    </label>
+    
+    <div class="search-divider"></div>
+    
+    <div class="search-field-container search-dates-container">
+      <div class="search-date-item">
+        <label for="id_check_in" class="search-label">{% trans 'Llegada' %}</label>
+        <input type="date" id="id_check_in" name="check_in" class="search-input" value="{{ search_check_in|default:'' }}">
+      </div>
+      <div class="search-dates-divider"></div>
+      <div class="search-date-item">
+        <label for="id_check_out" class="search-label">{% trans 'Salida' %}</label>
+        <input type="date" id="id_check_out" name="check_out" class="search-input" value="{{ search_check_out|default:'' }}">
+      </div>
+    </div>
+    
+    <style>
+      .search-dates-container {
+        flex-direction: row; 
+        align-items: center; 
+        justify-content: space-between; 
+        padding: 0.2rem 1rem; 
+        flex: 1.5; 
+        cursor: default;
+      }
+      .search-date-item {
+        flex: 1; 
+        display: flex; 
+        flex-direction: column;
+        min-width: 0;
+      }
+      .search-dates-divider {
+        width: 1px; 
+        height: 25px; 
+        background: #ddd; 
+        margin: 0 0.5rem;
+      }
+      @media (max-width: 991px) {
+        .search-dates-container {
+          flex-direction: column;
+          align-items: stretch;
+          padding: 0.8rem 1.2rem;
+        }
+        .search-dates-divider {
+          display: none;
+        }
+      }
+    </style>
+    
+    <div class="search-divider"></div>
+    
+    <label class="search-field-container" for="id_guests" style="flex: 0.8;">
+      <span class="search-label">{% trans 'Huéspedes' %}</span>
+      <input type="number" id="id_guests" name="guests" class="search-input" value="{{ search_guests|default:'' }}" placeholder="{% trans '¿Cuántos?' %}" min="1">
+    </label>
+    
+    <button type="submit" class="search-btn">
+      <i class="bi bi-search"></i>
+      <span>{% trans 'Buscar' %}</span>
+    </button>
+  </form>
+</div>

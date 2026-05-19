@@ -1,0 +1,414 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Payment' %}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top:2rem;padding-bottom:4rem;">
+
+  <nav class="breadcrumb">
+    <a href="{% url 'properties:home' %}">{% trans 'Home' %}</a>
+    <span class="breadcrumb-sep">/</span>
+    <a href="{% url 'properties:detail' booking.property.slug %}">{{ booking.property.name }}</a>
+    <span class="breadcrumb-sep">/</span>
+    <span class="breadcrumb-active">{% trans 'Payment' %}</span>
+  </nav>
+
+  <div style="display:grid;grid-template-columns:1fr 360px;gap:3rem;align-items:start;">
+
+    <div>
+      <h1 style="margin-bottom:.5rem; text-transform: uppercase;">{% trans 'WELCOME TO WYNWOOD HOUSE' %} {{ request.user.first_name|upper }}!</h1>
+      <p style="color:var(--gray);margin-bottom:2rem;">{% trans 'Select your additional services and payment method to continue with the booking' %}</p>
+
+      <h2 class="payment-section-title">{% trans 'ADDITIONAL SERVICES' %}</h2>
+      <p style="color:var(--gray);margin-bottom:2rem;">{% trans 'Enjoy a hassle-free stay with our additional services' %}</p>
+
+      <div class="services-grid">
+        {% for service in available_services %}
+        <div class="service-card">
+          <div class="service-image">
+            {% if service.image %}
+                <img src="{{ service.image.url }}" alt="{{ service.name }}">
+            {% else %}
+                <div class="service-image-placeholder"><i class="bi bi-image"></i></div>
+            {% endif %}
+          </div>
+          <div class="service-info">
+            <h4 class="service-name">{{ service.name }}</h4>
+            <button type="button" class="btn-add-service" data-service-id="{{ service.id }}" data-service-price="{{ service.price|stringformat:'f' }}" data-service-name="{{ service.name }}">{% trans '+ ADD' %}</button>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid var(--gray-light);">
+
+      <h2 class="payment-section-title">{% trans 'PAYMENT METHOD' %}</h2>
+
+      <form method="post" id="payment-form">
+        {% csrf_token %}
+        <div style="display:none;">
+            {{ form.additional_services }}
+        </div>
+
+        <div class="payment-methods-grid">
+          {% for value, label in form.payment_method.field.choices %}
+            <label class="payment-option-btn {% if value == 'apple_pay' %}black-btn{% endif %}" id="label_payment_{{ value }}" for="id_payment_{{ value }}">
+              <input type="radio" name="payment_method" value="{{ value }}" id="id_payment_{{ value }}"
+                {% if form.payment_method.value == value or forloop.first %}checked{% endif %}>
+                {% if value == 'card' %}<i class="bi bi-credit-card"></i> {% trans 'Payment with Debit/Credit Card' %}{% endif %}
+                {% if value == 'apple_pay' %}{% trans 'Book with' %} <i class="bi bi-apple"></i>{% trans 'Pay' %}{% endif %}
+                {% if value == 'google_pay' %}<img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="G Pay" height="20">{% endif %}
+            </label>
+          {% endfor %}
+        </div>
+
+        <div id="card-fields" style="margin-top: 2.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <h2 class="payment-section-title" style="margin-top: 0; letter-spacing: 0.2em; font-size: 1.5rem;">{% trans 'PAYMENT INFORMATION' %}</h2>
+              <a href="#" style="text-decoration: underline; font-size: 0.9rem; color: var(--black);">{% trans 'Change' %}</a>
+            </div>
+            <p style="color:var(--black); font-size: 0.9rem; margin-bottom:1.5rem;">{% trans 'Review your booking information to continue' %}.</p>
+
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.5rem;">
+                <span>{% trans 'Card Number' %} <i class="bi bi-lock" style="margin-left: 0.2rem;"></i></span>
+                <span style="color: #8C825A;"><i class="bi bi-lock-fill"></i> {% trans 'Secure payment via DLocal' %}</span>
+            </div>
+        <div class="form-group" style="position: relative;">
+            {{ form.card_number }}
+            <i class="bi bi-credit-card" style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: var(--black); font-size: 1.2rem;"></i>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                {{ form.card_expiry }}
+            </div>
+            <div class="form-group">
+                {{ form.card_cvv }}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="{{ form.card_holder.id_for_label }}" style="text-transform: none; font-size: 0.85rem; color: var(--black);">{% trans 'Cardholder Name' %}</label>
+            {{ form.card_holder }}
+        </div>
+        <div class="form-group">
+            {{ form.installments }}
+        </div>
+        </div>
+
+        <h2 class="payment-section-title" style="margin-top: 2.5rem; letter-spacing: 0.2em; font-size: 1.5rem;">{% trans 'BILLING INFORMATION' %}</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label" for="{{ form.address1.id_for_label }}" style="text-transform: none; font-size: 0.85rem; color: var(--black);">{% trans 'Address' %}</label>
+                {{ form.address1 }}
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="{{ form.address2.id_for_label }}" style="text-transform: none; font-size: 0.85rem; color: var(--black);">{% trans 'Address 2 (optional)' %}</label>
+                {{ form.address2 }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label" for="{{ form.country.id_for_label }}" style="text-transform: none; font-size: 0.85rem; color: var(--black);">{% trans 'Country' %}</label>
+                {{ form.country }}
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="{{ form.state.id_for_label }}" style="text-transform: none; font-size: 0.85rem; color: var(--black);">{% trans 'State/Region' %}</label>
+                {{ form.state }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label" for="{{ form.city.id_for_label }}" style="text-transform: none; font-size: 0.85rem; color: var(--black);">{% trans 'City' %}</label>
+                {{ form.city }}
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="{{ form.zip_code.id_for_label }}" style="text-transform: none; font-size: 0.85rem; color: var(--black);">{% trans 'Postal Code' %}</label>
+                {{ form.zip_code }}
+            </div>
+        </div>
+
+        <div style="font-size: 0.8rem; color: var(--black); line-height: 1.4; margin-top: 1.5rem; margin-bottom: 2rem; display: flex; align-items: flex-start; gap: 0.75rem;">
+            <input type="checkbox" id="id_terms_acceptance" name="terms_acceptance" style="margin-top: 0.2rem; cursor: pointer;" required>
+            <label for="id_terms_acceptance" style="cursor: pointer;">
+                {% trans 'By selecting Accept and Continue, I accept' %} <a href="#" style="text-decoration: underline;">{% trans 'Cancellation Policy' %}</a>, <a href="#" style="text-decoration: underline;">{% trans 'Terms of Service' %}</a> {% trans 'and' %} <a href="#" style="text-decoration: underline;">{% trans 'Privacy Policy' %}</a>. {% trans 'I also agree to pay the total amount shown' %}.
+            </label>
+        </div>
+
+        <button type="submit" class="btn btn-full" id="submit-button" style="background: #D9D9D9; color: #737373; font-weight: 600; font-size: 0.9rem; border-radius: 30px; padding: 1rem;" disabled>
+            {% trans 'COMPLETE BOOKING' %}
+        </button>
+      </form>
+    </div>
+
+    <div>
+      <div style="font-size: 0.9rem; margin-bottom: 1rem;">
+        <a href="#" style="text-decoration: underline; color: var(--black);">{% trans 'Need help completing your booking?' %}</a>
+      </div>
+      <div class="booking-summary">
+        {% with img=booking.property.get_primary_image %}
+          {% if img %}
+            <div class="booking-summary-img">
+              <img src="{{ img.image.url }}" alt="{{ booking.property.name }}">
+            </div>
+          {% endif %}
+        {% endwith %}
+        <div class="booking-summary-title">{{ booking.property.name }}</div>
+        <div class="booking-summary-location" style="margin-bottom: 1.5rem;">
+          {{ booking.property.destination.name }}
+        </div>
+        <div style="background: var(--bg); padding: 1.5rem; border-radius: 8px; margin: 0 -1.5rem -1.5rem -1.5rem;">
+          <hr class="booking-divider">
+          <div class="booking-row" style="background: #F8F9FA; padding: 0.8rem; border-radius: 4px; margin-bottom: 0.5rem;">
+            <span style="color:var(--black); font-weight: 500;">{% trans 'Dates' %}</span>
+            <span style="display: flex; align-items: center; gap: 0.5rem; color: var(--gray);">
+                {{ booking.check_in|date:"d M" }} - {{ booking.check_out|date:"d M" }} 
+                <a href="#" class="booking-summary-link"><i class="bi bi-pencil"></i></a>
+            </span>
+          </div>
+          <div class="booking-row" style="background: #F8F9FA; padding: 0.8rem; border-radius: 4px; margin-bottom: 1.5rem;">
+            <span style="color:var(--black); font-weight: 500;">{% trans 'Guests' %}</span>
+            <span style="display: flex; align-items: center; gap: 0.5rem; color: var(--gray);">
+                {{ booking.num_guests }} {% trans 'people' %}
+                <a href="#" class="booking-summary-link"><i class="bi bi-pencil"></i></a>
+            </span>
+          </div>
+          <div class="booking-row">
+            <span style="text-decoration: underline; color:var(--gray);">US$ {{ booking.property.price_per_night }} x {{ booking.nights }}</span>
+            <span id="summary-base-price"></span>
+          </div>
+          <div class="booking-row">
+            <span style="text-decoration: underline; color:var(--gray);">{% trans 'Cleaning fee' %}</span>
+            <span>US$ 20.00</span>
+          </div>
+          
+          <div id="summary-additional-services">
+          </div>
+
+          <div style="margin-top: 1rem; margin-bottom: 0.5rem; font-weight: 700; font-size: 0.85rem;">{% trans 'Taxes' %}</div>
+          <div class="booking-row">
+            <span style="text-decoration: underline; color:var(--gray);">{% trans 'VAT' %} (16.00%)</span>
+            <span id="summary-vat">US$ 0.00</span>
+          </div>
+          <div class="booking-row">
+            <span style="text-decoration: underline; color:var(--gray);">{% trans 'City Tax' %} (3.00%)</span>
+            <span id="summary-city-tax">US$ 0.00</span>
+          </div>
+          <hr class="booking-divider" style="margin: 1.5rem 0;">
+          <div class="booking-row booking-total" style="margin-top: 1rem; font-size: 1.1rem;">
+            <span>{% trans 'Total' %}</span>
+            <span id="summary-total">US$ 0.00</span>
+          </div>
+          <div class="wynwood-points-notice">
+              <p style="color: var(--black); font-size: 0.85rem;">{% trans 'With this booking you are generating' %}</p>
+              <div class="points-badge"><span id="summary-points">0</span> {% trans 'Wynwood Points' %}</div>
+              <p><a href="#" style="color: #A0A0A0; font-size: 0.8rem; border-bottom: 1px dotted #A0A0A0; text-decoration: none;">{% trans 'Learn more about Wynwood Points' %}</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const termsCheckbox = document.getElementById('id_terms_acceptance');
+const submitButton = document.getElementById('submit-button');
+
+function updateSubmitButtonState() {
+  if (termsCheckbox.checked) {
+    submitButton.disabled = false;
+    submitButton.style.background = '#000';
+    submitButton.style.color = '#FFF';
+    submitButton.style.cursor = 'pointer';
+  } else {
+    submitButton.disabled = true;
+    submitButton.style.background = '#D9D9D9';
+    submitButton.style.color = '#737373';
+    submitButton.style.cursor = 'not-allowed';
+  }
+}
+
+termsCheckbox.addEventListener('change', updateSubmitButtonState);
+
+function validateCardFields() {
+  const paymentMethod = document.querySelector('input[name="payment_method"]:checked');
+
+  if (!paymentMethod || paymentMethod.value !== 'card') {
+    return true;
+  }
+
+  const cardNumber = document.getElementById('id_card_number').value.replace(/\s/g, '');
+  const cardExpiry = document.getElementById('id_card_expiry').value;
+  const cardCvv = document.getElementById('id_card_cvv').value;
+  const cardHolder = document.getElementById('id_card_holder').value;
+
+  if (!cardNumber || !cardExpiry || !cardCvv || !cardHolder) {
+    alert('{% trans "All card fields are required" %}');
+    return false;
+  }
+
+  if (cardNumber.length < 13 || cardNumber.length > 19) {
+    alert('{% trans "Invalid card number length" %}');
+    return false;
+  }
+
+  if (!cardExpiry.match(/^\d{2}\/\d{2}$/)) {
+    alert('{% trans "Expiry date must be in MM/YY format" %}');
+    return false;
+  }
+
+  if (cardCvv.length < 3 || cardCvv.length > 4) {
+    alert('{% trans "CVV must be 3-4 digits" %}');
+    return false;
+  }
+
+  return true;
+}
+
+document.getElementById('payment-form').addEventListener('submit', function(e) {
+  if (!termsCheckbox.checked) {
+    e.preventDefault();
+    alert('{% trans "You must accept the terms and conditions to continue" %}');
+    return false;
+  }
+
+  if (!validateCardFields()) {
+    e.preventDefault();
+    return false;
+  }
+
+  const formData = new FormData(this);
+  const allServices = formData.getAll('additional_services');
+  console.log('Form submission - additional_services values:', allServices);
+
+  const allCheckboxes = document.querySelectorAll('input[name="additional_services"]');
+  console.log(`Total checkboxes found: ${allCheckboxes.length}`);
+  allCheckboxes.forEach((chk, idx) => {
+    console.log(`Checkbox ${idx}: value=${chk.value}, checked=${chk.checked}, id=${chk.id}`);
+  });
+});
+
+const cardNumberInput = document.getElementById('id_card_number');
+if (cardNumberInput) {
+  cardNumberInput.addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\s/g, '');
+    let formatted = value.match(/.{1,4}/g)?.join(' ') || value;
+    e.target.value = formatted;
+  });
+}
+
+const cardExpiryInput = document.getElementById('id_card_expiry');
+if (cardExpiryInput) {
+  cardExpiryInput.addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length >= 2) {
+      value = value.substring(0, 2) + '/' + value.substring(2, 4);
+    }
+    e.target.value = value;
+    if (value.length === 5) {
+      document.getElementById('id_card_cvv').focus();
+    }
+  });
+}
+
+function toggleCardFields() {
+  const selected = document.querySelector('input[name="payment_method"]:checked');
+  const cardFields = document.getElementById('card-fields');
+  
+  document.querySelectorAll('.payment-option-btn').forEach(btn => btn.classList.remove('selected'));
+  if (selected) {
+    const label = document.getElementById('label_payment_' + selected.value);
+    if(label) label.classList.add('selected');
+  }
+
+  if (cardFields) {
+    cardFields.style.display = (selected && selected.value === 'card') ? 'block' : 'none';
+  }
+}
+
+document.querySelectorAll('input[name="payment_method"]').forEach(r => {
+  r.addEventListener('change', toggleCardFields);
+});
+
+toggleCardFields();
+updateSubmitButtonState();
+
+const basePrice = parseFloat("{{ booking.property.price_per_night|stringformat:'f' }}") * parseInt("{{ booking.nights }}");
+const cleaningFee = 20.0;
+let selectedServices = {};
+
+const serviceCheckboxMap = {};
+document.querySelectorAll('input[name="additional_services"]').forEach(checkbox => {
+    const serviceId = checkbox.value;
+    serviceCheckboxMap[serviceId] = checkbox;
+});
+
+function updateSummary() {
+    let servicesTotal = 0;
+    const servicesContainer = document.getElementById('summary-additional-services');
+    servicesContainer.innerHTML = '';
+
+    for (const [id, service] of Object.entries(selectedServices)) {
+        servicesTotal += service.price;
+        servicesContainer.innerHTML += `
+        <div class="booking-row">
+          <span style="text-decoration: underline; color:var(--gray);">${service.name}</span>
+          <span>US$ ${service.price.toFixed(2)}</span>
+        </div>
+        `;
+    }
+
+    let subtotal = basePrice + cleaningFee + servicesTotal;
+    let vat = subtotal * 0.16;
+    let cityTax = subtotal * 0.03;
+    let total = subtotal + vat + cityTax;
+    
+    document.getElementById('summary-base-price').innerText = `US$ ${basePrice.toFixed(2)}`;
+    document.getElementById('summary-vat').innerText = `US$ ${vat.toFixed(2)}`;
+    document.getElementById('summary-city-tax').innerText = `US$ ${cityTax.toFixed(2)}`;
+    document.getElementById('summary-total').innerText = `US$ ${total.toFixed(2)}`;
+    document.getElementById('summary-points').innerText = Math.floor(total * 0.5);
+}
+
+document.querySelectorAll('.btn-add-service').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const serviceId = this.dataset.serviceId;
+        const servicePrice = parseFloat(this.dataset.servicePrice);
+        const serviceName = this.dataset.serviceName;
+        
+        const checkbox = serviceCheckboxMap[serviceId];
+
+        if (!checkbox) {
+            console.error(`Checkbox not found for service ${serviceId}`);
+            console.log('Available checkboxes:', serviceCheckboxMap);
+        }
+
+        if (selectedServices[serviceId]) {
+            delete selectedServices[serviceId];
+            if (checkbox) {
+                checkbox.checked = false;
+            }
+
+            this.innerText = '{% trans "+ ADD" %}';
+            this.style.background = 'var(--black)';
+            this.style.color = 'var(--white)';
+            this.style.border = 'none';
+        } else {
+            selectedServices[serviceId] = { price: servicePrice, name: serviceName };
+            if (checkbox) {
+                checkbox.checked = true;
+            }
+
+            this.innerText = '{% trans "- REMOVE" %}';
+            this.style.background = 'var(--white)';
+            this.style.color = 'var(--black)';
+            this.style.border = '1px solid var(--black)';
+        }
+        
+        updateSummary();
+    });
+});
+
+updateSummary();
+</script>
+{% endblock %}

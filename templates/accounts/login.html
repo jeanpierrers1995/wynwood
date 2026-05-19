@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans 'Sign in' %}{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+  <div class="auth-panel">
+    <a href="{% url 'properties:home' %}" class="auth-logo">wynwood<span style="color:var(--gold);">*</span> house</a>
+    <h2 class="auth-title">{% trans 'Welcome back' %}</h2>
+    <p class="auth-subtitle">{% trans 'Sign in to manage your reservations.' %}</p>
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label" for="{{ form.username.id_for_label }}">{% trans 'Email address' %}</label>
+        <input type="email" name="username" id="{{ form.username.id_for_label }}" class="form-control {% if form.username.errors %}is-invalid{% endif %}"
+          value="{{ form.username.value|default:'' }}" placeholder="you@example.com" autocomplete="email">
+        {% if form.username.errors %}<div class="invalid-feedback">{{ form.username.errors.0 }}</div>{% endif %}
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="{{ form.password.id_for_label }}">{% trans 'Password' %}</label>
+        <input type="password" name="password" id="{{ form.password.id_for_label }}" class="form-control {% if form.password.errors %}is-invalid{% endif %}"
+          placeholder="••••••••" autocomplete="current-password">
+        {% if form.password.errors %}<div class="invalid-feedback">{{ form.password.errors.0 }}</div>{% endif %}
+      </div>
+      {% if form.non_field_errors %}
+        <div class="message message-error" style="margin-bottom:1rem;">{{ form.non_field_errors.0 }}</div>
+      {% endif %}
+      {% if next %}
+        <input type="hidden" name="next" value="{{ next }}">
+      {% endif %}
+      <button type="submit" class="btn btn-primary btn-full btn-lg">{% trans 'Sign in' %}</button>
+    </form>
+
+    <p style="text-align:center;margin-top:1.5rem;font-size:.88rem;color:var(--gray);">
+      {% trans "Don't have an account?" %}
+      <a href="{% url 'accounts:register' %}" style="color:var(--black);font-weight:700;text-decoration:underline;">{% trans 'Create one' %}</a>
+    </p>
+  </div>
+
+  <div class="auth-image">
+    <img src="{% static 'images/auth-bg.jpg' %}" alt="Luxury property" onerror="this.parentElement.style.background='linear-gradient(135deg,#1a1a1a,#c99a2e)'">
+  </div>
+</div>
+{% endblock %}

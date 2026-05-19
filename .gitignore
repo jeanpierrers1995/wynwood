@@ -1,0 +1,42 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment variables
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Database
+db.sqlite3
+
+# Media files (optional - can be kept if small)
+# media/
+
+# Static files
+staticfiles/
+
+# AI assistant files
+.claude.md
+.cursor/
+.windsurf/
+
+# Project planning (not for production)
+project.md
+
+images/*

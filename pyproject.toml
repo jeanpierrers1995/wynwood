@@ -1,0 +1,22 @@
+[project]
+name = "wynwood"
+version = "0.1.0"
+description = "--"
+requires-python = ">=3.12"
+dependencies = [
+    "django>=6.0.5",
+    "django-environ>=0.13.0",
+    "pillow>=12.2.0",
+    "psycopg2-binary>=2.9.12",
+    "whitenoise>=6.12.0",
+]
+
+[dependency-groups]
+dev = [
+    "django-debug-toolbar>=6.3.0",
+    "django-extensions>=4.1",
+    "ruff>=0.15.13",
+]
+prod = [
+    "gunicorn>=26.0.0",
+]

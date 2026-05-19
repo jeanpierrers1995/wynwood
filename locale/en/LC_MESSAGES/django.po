@@ -1,0 +1,925 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-18 18:27-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: apps/accounts/admin.py:27 apps/accounts/admin.py:33
+msgid "Profile"
+msgstr ""
+
+#: apps/accounts/forms.py:19 apps/accounts/forms.py:21
+#: apps/accounts/forms.py:96 apps/accounts/forms.py:98
+#: templates/accounts/login.html:17 templates/accounts/register.html:19
+msgid "Email address"
+msgstr ""
+
+#: apps/accounts/forms.py:26 apps/accounts/forms.py:27
+#: templates/accounts/register.html:27
+msgid "First name"
+msgstr ""
+
+#: apps/accounts/forms.py:32 apps/accounts/forms.py:33
+#: templates/accounts/register.html:33
+msgid "Last name"
+msgstr ""
+
+#: apps/accounts/forms.py:38
+msgid "+1 555 000 0000"
+msgstr ""
+
+#: apps/accounts/forms.py:39
+msgid "Phone number"
+msgstr ""
+
+#: apps/accounts/forms.py:44 apps/accounts/forms.py:45
+#: apps/accounts/models.py:27 apps/properties/models.py:31
+#: templates/accounts/profile.html:25 templates/accounts/register.html:47
+msgid "Country"
+msgstr ""
+
+#: apps/accounts/forms.py:66
+msgid "An account with this email already exists."
+msgstr ""
+
+#: apps/accounts/forms.py:102 apps/accounts/forms.py:104
+#: templates/accounts/login.html:23 templates/accounts/register.html:54
+msgid "Password"
+msgstr ""
+
+#: apps/accounts/models.py:22 templates/accounts/profile.html:21
+#: templates/accounts/register.html:42
+msgid "Phone"
+msgstr ""
+
+#: apps/accounts/models.py:33
+msgid "Preferred language"
+msgstr ""
+
+#: apps/accounts/models.py:37
+msgid "User"
+msgstr ""
+
+#: apps/accounts/models.py:38
+msgid "Users"
+msgstr ""
+
+#: apps/accounts/views.py:52
+#, python-format
+msgid "Welcome to Wynwood House, %(name)s!"
+msgstr ""
+
+#: apps/accounts/views.py:62
+msgid "Please correct the errors below."
+msgstr ""
+
+#: apps/bookings/admin.py:43
+msgid "Dates & Guests"
+msgstr ""
+
+#: apps/bookings/admin.py:47
+msgid "Pricing"
+msgstr ""
+
+#: apps/bookings/admin.py:51
+msgid "Timestamps"
+msgstr ""
+
+#: apps/bookings/forms.py:27 templates/pages/checkout.html:27
+#: templates/pages/confirmation.html:33 templates/pages/payment.html:90
+#: templates/pages/property_detail.html:92
+msgid "Check-in"
+msgstr ""
+
+#: apps/bookings/forms.py:34 templates/pages/checkout.html:34
+#: templates/pages/confirmation.html:37 templates/pages/payment.html:94
+#: templates/pages/property_detail.html:99
+msgid "Check-out"
+msgstr ""
+
+#: apps/bookings/forms.py:42 templates/pages/confirmation.html:41
+#: templates/pages/payment.html:98 templates/pages/property_detail.html:106
+msgid "Guests"
+msgstr ""
+
+#: apps/bookings/forms.py:54 apps/bookings/models.py:107
+msgid "Check-in date cannot be in the past."
+msgstr ""
+
+#: apps/bookings/forms.py:57
+msgid "Check-out must be after check-in."
+msgstr ""
+
+#: apps/bookings/forms.py:76 apps/bookings/models.py:74
+msgid "Payment method"
+msgstr ""
+
+#: apps/bookings/forms.py:88 templates/pages/payment.html:43
+msgid "Card number"
+msgstr ""
+
+#: apps/bookings/forms.py:100 templates/pages/payment.html:49
+msgid "Expiry date"
+msgstr ""
+
+#: apps/bookings/forms.py:112
+msgid "CVV"
+msgstr ""
+
+#: apps/bookings/forms.py:119
+msgid "Name on card"
+msgstr ""
+
+#: apps/bookings/forms.py:124 templates/pages/payment.html:60
+msgid "Cardholder name"
+msgstr ""
+
+#: apps/bookings/forms.py:138
+msgid "This field is required for card payments."
+msgstr ""
+
+#: apps/bookings/models.py:29
+msgid "Pending"
+msgstr ""
+
+#: apps/bookings/models.py:30
+msgid "Confirmed"
+msgstr ""
+
+#: apps/bookings/models.py:31
+msgid "Cancelled"
+msgstr ""
+
+#: apps/bookings/models.py:39
+msgid "Credit card"
+msgstr ""
+
+#: apps/bookings/models.py:40
+msgid "Apple Pay"
+msgstr ""
+
+#: apps/bookings/models.py:41
+msgid "Google Pay"
+msgstr ""
+
+#: apps/bookings/models.py:48 apps/properties/models.py:195
+#: apps/properties/models.py:229 templates/pages/confirmation.html:25
+msgid "Property"
+msgstr ""
+
+#: apps/bookings/models.py:54
+msgid "Guest"
+msgstr ""
+
+#: apps/bookings/models.py:56
+msgid "Check-in date"
+msgstr ""
+
+#: apps/bookings/models.py:57
+msgid "Check-out date"
+msgstr ""
+
+#: apps/bookings/models.py:58 templates/pages/checkout.html:43
+msgid "Number of guests"
+msgstr ""
+
+#: apps/bookings/models.py:62
+msgid "Total price"
+msgstr ""
+
+#: apps/bookings/models.py:68 apps/properties/admin.py:89
+msgid "Status"
+msgstr ""
+
+#: apps/bookings/models.py:76 apps/properties/models.py:189
+msgid "Created at"
+msgstr ""
+
+#: apps/bookings/models.py:77 apps/properties/models.py:190
+msgid "Updated at"
+msgstr ""
+
+#: apps/bookings/models.py:80 templates/pages/confirmation.html:15
+msgid "Booking"
+msgstr ""
+
+#: apps/bookings/models.py:81
+msgid "Bookings"
+msgstr ""
+
+#: apps/bookings/models.py:103 apps/bookings/services.py:66
+msgid "Check-out date must be after the check-in date."
+msgstr ""
+
+#: apps/bookings/models.py:118 apps/bookings/services.py:96
+msgid "The selected dates are not available for this property."
+msgstr ""
+
+#: apps/bookings/models.py:128 apps/bookings/services.py:74
+#, python-format
+msgid ""
+"Number of guests (%(requested)s) exceeds the property's maximum capacity "
+"(%(max)s)."
+msgstr ""
+
+#: apps/bookings/services.py:55
+msgid "The selected property is not available."
+msgstr ""
+
+#: apps/bookings/services.py:60
+msgid "Check-in and check-out dates are required."
+msgstr ""
+
+#: apps/bookings/services.py:63
+msgid "Check-in date cannot be earlier than today."
+msgstr ""
+
+#: apps/bookings/services.py:69
+msgid "Number of guests must be at least 1."
+msgstr ""
+
+#: apps/bookings/services.py:84
+#, python-format
+msgid "Invalid payment method. Valid options: %(options)s."
+msgstr ""
+
+#: apps/bookings/views.py:87
+msgid "Please correct the errors in the booking form."
+msgstr ""
+
+#: apps/bookings/views.py:137
+msgid "Please check your payment details."
+msgstr ""
+
+#: apps/core/mixins.py:67
+msgid "You do not have permission to access this section."
+msgstr ""
+
+#: apps/core/mixins.py:105
+msgid "You do not have permission to perform this action."
+msgstr ""
+
+#: apps/notifications/models.py:26 templates/pages/confirmation.html:4
+msgid "Booking confirmed"
+msgstr ""
+
+#: apps/notifications/models.py:27
+msgid "Booking cancelled"
+msgstr ""
+
+#: apps/notifications/models.py:28
+msgid "Booking pending"
+msgstr ""
+
+#: apps/notifications/models.py:29
+msgid "General"
+msgstr ""
+
+#: apps/notifications/models.py:36
+msgid "Recipient"
+msgstr ""
+
+#: apps/notifications/models.py:42
+msgid "Type"
+msgstr ""
+
+#: apps/notifications/models.py:44
+msgid "Subject"
+msgstr ""
+
+#: apps/notifications/models.py:45
+msgid "Body"
+msgstr ""
+
+#: apps/notifications/models.py:46
+msgid "Read"
+msgstr ""
+
+#: apps/notifications/models.py:47
+msgid "Sent at"
+msgstr ""
+
+#: apps/notifications/models.py:50
+msgid "Notification"
+msgstr ""
+
+#: apps/notifications/models.py:51
+msgid "Notifications"
+msgstr ""
+
+#: apps/properties/admin.py:22
+msgid "Preview"
+msgstr ""
+
+#: apps/properties/admin.py:73 templates/pages/property_detail.html:76
+msgid "Location"
+msgstr ""
+
+#: apps/properties/admin.py:77
+msgid "Capacity & Pricing"
+msgstr ""
+
+#: apps/properties/models.py:25 apps/properties/models.py:58
+#: apps/properties/models.py:139
+msgid "Name"
+msgstr ""
+
+#: apps/properties/models.py:26 apps/properties/models.py:140
+msgid "Slug"
+msgstr ""
+
+#: apps/properties/models.py:29 apps/properties/models.py:233
+msgid "Image"
+msgstr ""
+
+#: apps/properties/models.py:32 apps/properties/models.py:188
+msgid "Active"
+msgstr ""
+
+#: apps/properties/models.py:33 apps/properties/models.py:241
+msgid "Order"
+msgstr ""
+
+#: apps/properties/models.py:37 apps/properties/models.py:146
+#: templates/pages/confirmation.html:29
+msgid "Destination"
+msgstr ""
+
+#: apps/properties/models.py:38
+msgid "Destinations"
+msgstr ""
+
+#: apps/properties/models.py:62
+msgid "Bootstrap icon class (e.g. bi-wifi)"
+msgstr ""
+
+#: apps/properties/models.py:63
+msgid "Icon class"
+msgstr ""
+
+#: apps/properties/models.py:67
+msgid "Amenity"
+msgstr ""
+
+#: apps/properties/models.py:68 apps/properties/models.py:185
+#: templates/pages/property_detail.html:63
+msgid "Amenities"
+msgstr ""
+
+#: apps/properties/models.py:134
+msgid "All properties"
+msgstr ""
+
+#: apps/properties/models.py:135 templates/pages/home.html:70
+#: templates/partials/_navbar.html:15
+msgid "The Collection*"
+msgstr ""
+
+#: apps/properties/models.py:136 templates/pages/home.html:71
+#: templates/partials/_navbar.html:14
+msgid "Casa Wynwood"
+msgstr ""
+
+#: apps/properties/models.py:141
+msgid "Description"
+msgstr ""
+
+#: apps/properties/models.py:148
+msgid "Address"
+msgstr ""
+
+#: apps/properties/models.py:152
+msgid "District / Neighbourhood"
+msgstr ""
+
+#: apps/properties/models.py:159
+msgid "Latitude"
+msgstr ""
+
+#: apps/properties/models.py:166
+msgid "Longitude"
+msgstr ""
+
+#: apps/properties/models.py:171 templates/pages/checkout.html:83
+msgid "Price per night"
+msgstr ""
+
+#: apps/properties/models.py:173 templates/pages/checkout.html:87
+msgid "Max guests"
+msgstr ""
+
+#: apps/properties/models.py:174 templates/pages/checkout.html:91
+msgid "Bedrooms"
+msgstr ""
+
+#: apps/properties/models.py:175
+msgid "Bathrooms"
+msgstr ""
+
+#: apps/properties/models.py:180
+msgid "Category"
+msgstr ""
+
+#: apps/properties/models.py:187 templates/partials/_property_card.html:13
+msgid "Featured"
+msgstr ""
+
+#: apps/properties/models.py:196
+msgid "Properties"
+msgstr ""
+
+#: apps/properties/models.py:238
+msgid "Alt text"
+msgstr ""
+
+#: apps/properties/models.py:240
+msgid "Primary"
+msgstr ""
+
+#: apps/properties/models.py:245
+msgid "Property image"
+msgstr ""
+
+#: apps/properties/models.py:246
+msgid "Property images"
+msgstr ""
+
+#: templates/accounts/login.html:5 templates/accounts/login.html:34
+#: templates/accounts/register.html:75 templates/partials/_footer.html:28
+msgid "Sign in"
+msgstr ""
+
+#: templates/accounts/login.html:11
+msgid "Welcome back"
+msgstr ""
+
+#: templates/accounts/login.html:12
+msgid "Sign in to manage your reservations."
+msgstr ""
+
+#: templates/accounts/login.html:38
+msgid "Don't have an account?"
+msgstr ""
+
+#: templates/accounts/login.html:39
+msgid "Create one"
+msgstr ""
+
+#: templates/accounts/profile.html:4 templates/partials/_footer.html:20
+msgid "My profile"
+msgstr ""
+
+#: templates/accounts/profile.html:29
+msgid "Member since"
+msgstr ""
+
+#: templates/accounts/profile.html:33
+msgid "Total bookings"
+msgstr ""
+
+#: templates/accounts/profile.html:38
+msgid "Booking history"
+msgstr ""
+
+#: templates/accounts/profile.html:45 templates/pages/my_bookings.html:29
+#: templates/pages/property_detail.html:49
+#: templates/pages/search_results.html:28
+#: templates/partials/_property_card.html:28
+msgid "guests"
+msgstr ""
+
+#: templates/accounts/profile.html:58
+msgid "No bookings yet."
+msgstr ""
+
+#: templates/accounts/profile.html:58
+msgid "Start exploring"
+msgstr ""
+
+#: templates/accounts/register.html:5 templates/accounts/register.html:70
+#: templates/partials/_footer.html:29
+msgid "Create account"
+msgstr ""
+
+#: templates/accounts/register.html:11
+msgid "Create your account"
+msgstr ""
+
+#: templates/accounts/register.html:12
+msgid "Join Wynwood House and start booking exceptional properties."
+msgstr ""
+
+#: templates/accounts/register.html:42 templates/accounts/register.html:47
+msgid "optional"
+msgstr ""
+
+#: templates/accounts/register.html:60
+msgid "Confirm password"
+msgstr ""
+
+#: templates/accounts/register.html:74
+msgid "Already have an account?"
+msgstr ""
+
+#: templates/base.html:6
+msgid ""
+"Wynwood House — Home experience. Hotel quality. Premium property rentals "
+"across Latin America and Spain."
+msgstr ""
+
+#: templates/base.html:7
+msgid "Home Experience. Hotel Quality."
+msgstr ""
+
+#: templates/base.html:16
+#, python-format
+msgid "Corre! 20%% de descuento en todos los viajes"
+msgstr ""
+
+#: templates/base.html:17 templates/base.html:56
+msgid "Quedan solo"
+msgstr ""
+
+#: templates/base.html:48
+msgid "¡Oferta terminada!"
+msgstr ""
+
+#: templates/pages/checkout.html:4 templates/pages/checkout.html:14
+msgid "Checkout"
+msgstr ""
+
+#: templates/pages/checkout.html:10 templates/pages/payment.html:10
+#: templates/pages/property_detail.html:11 templates/partials/_footer.html:11
+msgid "Home"
+msgstr ""
+
+#: templates/pages/checkout.html:20
+msgid "Complete your booking"
+msgstr ""
+
+#: templates/pages/checkout.html:21
+msgid "Fill in your dates and number of guests to confirm the reservation."
+msgstr ""
+
+#: templates/pages/checkout.html:43
+msgid "max"
+msgstr ""
+
+#: templates/pages/checkout.html:52
+msgid "Your details"
+msgstr ""
+
+#: templates/pages/checkout.html:60
+msgid "Proceed to payment"
+msgstr ""
+
+#: templates/pages/checkout.html:63
+msgid "You won't be charged until payment is confirmed."
+msgstr ""
+
+#: templates/pages/confirmation.html:18
+msgid "Your booking is confirmed!"
+msgstr ""
+
+#: templates/pages/confirmation.html:20
+msgid "A confirmation email has been sent to"
+msgstr ""
+
+#: templates/pages/confirmation.html:45
+msgid "Total paid"
+msgstr ""
+
+#: templates/pages/confirmation.html:51 templates/pages/my_bookings.html:4
+#: templates/pages/my_bookings.html:9 templates/partials/_footer.html:13
+msgid "My bookings"
+msgstr ""
+
+#: templates/pages/confirmation.html:52
+msgid "Explore more"
+msgstr ""
+
+#: templates/pages/home.html:5
+msgid "Discover"
+msgstr ""
+
+#: templates/pages/home.html:15
+msgid "HOME EXPERIENCE, HOTEL QUALITY"
+msgstr ""
+
+#: templates/pages/home.html:16
+msgid "BEST OF BOTH WORLDS"
+msgstr ""
+
+#: templates/pages/home.html:28
+msgid "DISCOVER OUR DESTINATIONS"
+msgstr ""
+
+#: templates/pages/home.html:29
+msgid ""
+"Explore our curated portfolio of destinations across the Americas and Europe."
+msgstr ""
+
+#: templates/pages/home.html:69
+msgid "Todas las propiedades"
+msgstr ""
+
+#: templates/pages/home.html:76
+msgid "PROPIEDADES DESTACADAS"
+msgstr ""
+
+#: templates/pages/home.html:78
+msgid ""
+"Descubre nuestra selección exclusiva de propiedades y conoce tu destino "
+"preferido a tu manera. Encuentra tu estadía ideal y empieza a vivir una "
+"experiencia única."
+msgstr ""
+
+#: templates/pages/home.html:106
+msgid "No featured properties at the moment. Check back soon!"
+msgstr ""
+
+#: templates/pages/home.html:138
+msgid "SERVICIOS EN WYNWOOD HOUSE"
+msgstr ""
+
+#: templates/pages/home.html:140
+msgid ""
+"Descubre los servicios que ofrecen nuestras propiedades para hacer de tu "
+"estadía la experiencia más cómoda y emocionante que puedas imaginar."
+msgstr ""
+
+#: templates/pages/home.html:145
+msgid "Check In Sin Contacto"
+msgstr ""
+
+#: templates/pages/home.html:146
+msgid "C H E C K  I N  S I N<br>C O N T A C T O"
+msgstr ""
+
+#: templates/pages/home.html:149
+msgid "Limpieza Profesional"
+msgstr ""
+
+#: templates/pages/home.html:150
+msgid "L I M P I E Z A<br>P R O F E S I O N A L"
+msgstr ""
+
+#: templates/pages/home.html:154
+msgid "W I F I"
+msgstr ""
+
+#: templates/pages/home.html:157
+msgid "Kit de Baño"
+msgstr ""
+
+#: templates/pages/home.html:158
+msgid "K I T  D E  B A Ñ O"
+msgstr ""
+
+#: templates/pages/home.html:161
+msgid "Cocina Equipada"
+msgstr ""
+
+#: templates/pages/home.html:162
+msgid "C O C I N A<br>E Q U I P A D A"
+msgstr ""
+
+#: templates/pages/home.html:165
+msgid "Pet Friendly"
+msgstr ""
+
+#: templates/pages/home.html:166
+msgid "P E T<br>F R I E N D L Y"
+msgstr ""
+
+#: templates/pages/home.html:169
+msgid "Soporte 24/7"
+msgstr ""
+
+#: templates/pages/home.html:170
+msgid "S O P O R T E<br>2 4 / 7"
+msgstr ""
+
+#: templates/pages/home.html:173
+msgid "Cama Wynwood"
+msgstr ""
+
+#: templates/pages/home.html:174
+msgid "C A M A<br>W Y N W O O D"
+msgstr ""
+
+#: templates/pages/my_bookings.html:41
+msgid "View property"
+msgstr ""
+
+#: templates/pages/my_bookings.html:49
+msgid "No bookings yet"
+msgstr ""
+
+#: templates/pages/my_bookings.html:50
+msgid "Start exploring our properties and make your first booking."
+msgstr ""
+
+#: templates/pages/my_bookings.html:51 templates/partials/_footer.html:12
+msgid "Search properties"
+msgstr ""
+
+#: templates/pages/payment.html:4 templates/pages/payment.html:14
+#: templates/pages/payment.html:20
+msgid "Payment"
+msgstr ""
+
+#: templates/pages/payment.html:21
+msgid "Choose your payment method and complete the booking."
+msgstr ""
+
+#: templates/pages/payment.html:67
+msgid "Complete booking"
+msgstr ""
+
+#: templates/pages/payment.html:70
+msgid "Your payment information is secure and encrypted."
+msgstr ""
+
+#: templates/pages/payment.html:102
+msgid "nights"
+msgstr ""
+
+#: templates/pages/payment.html:106
+msgid "Total"
+msgstr ""
+
+#: templates/pages/property_detail.html:51
+msgid "bedrooms"
+msgstr ""
+
+#: templates/pages/property_detail.html:53
+msgid "bathrooms"
+msgstr ""
+
+#: templates/pages/property_detail.html:57
+msgid "About this property"
+msgstr ""
+
+#: templates/pages/property_detail.html:86
+#: templates/partials/_property_card.html:25
+msgid "night"
+msgstr ""
+
+#: templates/pages/property_detail.html:113
+msgid "Reserve"
+msgstr ""
+
+#: templates/pages/property_detail.html:118
+msgid "You won't be charged yet"
+msgstr ""
+
+#: templates/pages/search_results.html:4
+msgid "Search"
+msgstr ""
+
+#: templates/pages/search_results.html:5
+msgid "Search available properties by destination, dates and number of guests."
+msgstr ""
+
+#: templates/pages/search_results.html:20
+msgid "All destinations"
+msgstr ""
+
+#: templates/pages/search_results.html:23
+msgid "properties available"
+msgstr ""
+
+#: templates/pages/search_results.html:45
+msgid "Previous"
+msgstr ""
+
+#: templates/pages/search_results.html:48
+msgid "Page"
+msgstr ""
+
+#: templates/pages/search_results.html:48
+msgid "of"
+msgstr ""
+
+#: templates/pages/search_results.html:51
+msgid "Next"
+msgstr ""
+
+#: templates/pages/search_results.html:60
+msgid "No properties found"
+msgstr ""
+
+#: templates/pages/search_results.html:62
+msgid "Try different dates, destination or number of guests."
+msgstr ""
+
+#: templates/pages/search_results.html:64
+msgid "Back to home"
+msgstr ""
+
+#: templates/partials/_footer.html:6
+msgid "Home experience. Hotel quality."
+msgstr ""
+
+#: templates/partials/_footer.html:6
+msgid "Premium rentals across Latin America and Spain."
+msgstr ""
+
+#: templates/partials/_footer.html:9
+msgid "Explore"
+msgstr ""
+
+#: templates/partials/_footer.html:17
+msgid "Account"
+msgstr ""
+
+#: templates/partials/_footer.html:24 templates/partials/_navbar.html:25
+msgid "Sign out"
+msgstr ""
+
+#: templates/partials/_footer.html:34
+msgid "Contact"
+msgstr ""
+
+#: templates/partials/_footer.html:37
+msgid "WhatsApp"
+msgstr ""
+
+#: templates/partials/_footer.html:43
+msgid "All rights reserved."
+msgstr ""
+
+#: templates/partials/_navbar.html:16
+msgid "Publica tu propiedad"
+msgstr "List your property"
+
+#: templates/partials/_navbar.html:17
+msgid "Invierte en Bienes Raíces"
+msgstr "Invest in Real Estate"
+
+#: templates/partials/_navbar.html:28
+msgid "Iniciar sesión"
+msgstr "Log in"
+
+#: templates/partials/_property_card.html:15
+msgid "Save property"
+msgstr "Save property"
+
+#: templates/partials/_property_card.html:29
+msgid "bed"
+msgstr "bed"
+
+#: templates/partials/_property_card.html:30
+msgid "bath"
+msgstr "bath"
+
+#: templates/partials/_search_bar.html:122
+msgid "Ciudad o destino"
+msgstr "City or destination"
+
+#: templates/partials/_search_bar.html:124
+msgid "Todos los destinos"
+msgstr "All destinations"
+
+#: templates/partials/_search_bar.html:136
+msgid "Distrito"
+msgstr "District"
+
+#: templates/partials/_search_bar.html:138
+msgid "Todos los distritos"
+msgstr "All districts"
+
+#: templates/partials/_search_bar.html:146
+msgid "Llegada"
+msgstr "Check-in"
+
+#: templates/partials/_search_bar.html:151
+msgid "Salida"
+msgstr "Check-out"
+
+#: templates/partials/_search_bar.html:192
+msgid "Huéspedes"
+msgstr "Guests"
+
+#: templates/partials/_search_bar.html:193
+msgid "¿Cuántos?"
+msgstr "How many?"
+
+#: templates/partials/_search_bar.html:198
+msgid "Buscar"
+msgstr "Search"

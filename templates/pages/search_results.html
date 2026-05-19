@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Search' %}{% endblock %}
+{% block meta_description %}{% trans 'Search available properties by destination, dates and number of guests.' %}{% endblock %}
+
+{% block content %}
+
+<div class="search-filters">
+  <div class="search-filters-inner">
+    {% include 'partials/_search_bar.html' %}
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="section-header d-flex justify-between align-center" style="margin-bottom:1.5rem;">
+      <div>
+        <h2>
+          {% if search_city %}{{ search_city }}{% else %}{% trans 'All destinations' %}{% endif %}
+        </h2>
+        <p>
+          {{ total_count }} {% trans 'properties available' %}
+          {% if search_check_in and search_check_out %}
+            · {{ search_check_in }} → {{ search_check_out }}
+          {% endif %}
+          {% if search_guests %}
+            · {{ search_guests }} {% trans 'guests' %}
+          {% endif %}
+        </p>
+      </div>
+    </div>
+
+    {% if properties %}
+      <div class="property-grid">
+        {% for property in properties %}
+          {% include 'partials/_property_card.html' with property=property %}
+        {% endfor %}
+      </div>
+
+      {% if is_paginated %}
+        <div class="d-flex justify-between align-center" style="margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--gray-light);">
+          {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}&city={{ search_city }}&check_in={{ search_check_in }}&check_out={{ search_check_out }}&guests={{ search_guests }}" class="btn btn-outline">
+              &larr; {% trans 'Previous' %}
+            </a>
+          {% else %}<span></span>{% endif %}
+          <span class="label">{% trans 'Page' %} {{ page_obj.number }} {% trans 'of' %} {{ page_obj.paginator.num_pages }}</span>
+          {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}&city={{ search_city }}&check_in={{ search_check_in }}&check_out={{ search_check_out }}&guests={{ search_guests }}" class="btn btn-outline">
+              {% trans 'Next' %} &rarr;
+            </a>
+          {% else %}<span></span>{% endif %}
+        </div>
+      {% endif %}
+
+    {% else %}
+      <div class="text-center" style="padding:5rem 1rem;">
+        <i class="bi bi-search" style="font-size:3rem;color:var(--gray-light);display:block;margin-bottom:1rem;"></i>
+        <h3>{% trans 'No properties found' %}</h3>
+        <p style="color:var(--gray);margin-top:.5rem;margin-bottom:1.5rem;">
+          {% trans 'Try different dates, destination or number of guests.' %}
+        </p>
+        <a href="{% url 'properties:home' %}" class="btn btn-primary">{% trans 'Back to home' %}</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

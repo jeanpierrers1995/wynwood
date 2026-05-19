@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans 'Create account' %}{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+  <div class="auth-panel" style="overflow-y:auto;max-height:100vh;">
+    <a href="{% url 'properties:home' %}" class="auth-logo">wynwood<span style="color:var(--gold);">*</span> house</a>
+    <h2 class="auth-title">{% trans 'Create your account' %}</h2>
+    <p class="auth-subtitle">{% trans 'Join Wynwood House and start booking exceptional properties.' %}</p>
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+
+      <div class="form-group">
+        <label class="form-label" for="{{ form.email.id_for_label }}">{% trans 'Email address' %}</label>
+        <input type="email" name="email" id="{{ form.email.id_for_label }}" class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+          value="{{ form.email.value|default:'' }}" placeholder="you@example.com" autocomplete="email">
+        {% if form.email.errors %}<div class="invalid-feedback">{{ form.email.errors.0 }}</div>{% endif %}
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="{{ form.first_name.id_for_label }}">{% trans 'First name' %}</label>
+          <input type="text" name="first_name" id="{{ form.first_name.id_for_label }}" class="form-control {% if form.first_name.errors %}is-invalid{% endif %}"
+            value="{{ form.first_name.value|default:'' }}" placeholder="Alex">
+          {% if form.first_name.errors %}<div class="invalid-feedback">{{ form.first_name.errors.0 }}</div>{% endif %}
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="{{ form.last_name.id_for_label }}">{% trans 'Last name' %}</label>
+          <input type="text" name="last_name" id="{{ form.last_name.id_for_label }}" class="form-control {% if form.last_name.errors %}is-invalid{% endif %}"
+            value="{{ form.last_name.value|default:'' }}" placeholder="Traveller">
+          {% if form.last_name.errors %}<div class="invalid-feedback">{{ form.last_name.errors.0 }}</div>{% endif %}
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="{{ form.phone.id_for_label }}">{% trans 'Phone' %} <span style="color:var(--gray);">({% trans 'optional' %})</span></label>
+          <input type="tel" name="phone" id="{{ form.phone.id_for_label }}" class="form-control"
+            value="{{ form.phone.value|default:'' }}" placeholder="+1 555 000 0000">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="{{ form.country.id_for_label }}">{% trans 'Country' %} <span style="color:var(--gray);">({% trans 'optional' %})</span></label>
+          <input type="text" name="country" id="{{ form.country.id_for_label }}" class="form-control"
+            value="{{ form.country.value|default:'' }}" placeholder="Colombia">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="{{ form.password1.id_for_label }}">{% trans 'Password' %}</label>
+        <input type="password" name="password1" id="{{ form.password1.id_for_label }}" class="form-control {% if form.password1.errors %}is-invalid{% endif %}"
+          placeholder="••••••••" autocomplete="new-password">
+        {% if form.password1.errors %}<div class="invalid-feedback">{{ form.password1.errors.0 }}</div>{% endif %}
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="{{ form.password2.id_for_label }}">{% trans 'Confirm password' %}</label>
+        <input type="password" name="password2" id="{{ form.password2.id_for_label }}" class="form-control {% if form.password2.errors %}is-invalid{% endif %}"
+          placeholder="••••••••" autocomplete="new-password">
+        {% if form.password2.errors %}<div class="invalid-feedback">{{ form.password2.errors.0 }}</div>{% endif %}
+      </div>
+
+      {% if form.non_field_errors %}
+        <div class="message message-error" style="margin-bottom:1rem;">{{ form.non_field_errors.0 }}</div>
+      {% endif %}
+
+      <button type="submit" class="btn btn-primary btn-full btn-lg">{% trans 'Create account' %}</button>
+    </form>
+
+    <p style="text-align:center;margin-top:1.5rem;font-size:.88rem;color:var(--gray);">
+      {% trans 'Already have an account?' %}
+      <a href="{% url 'accounts:login' %}" style="color:var(--black);font-weight:700;text-decoration:underline;">{% trans 'Sign in' %}</a>
+    </p>
+  </div>
+
+  <div class="auth-image">
+    <img src="{% static 'images/auth-bg.jpg' %}" alt="Luxury property" onerror="this.parentElement.style.background='linear-gradient(135deg,#1a1a1a,#c99a2e)'">
+  </div>
+</div>
+{% endblock %}
