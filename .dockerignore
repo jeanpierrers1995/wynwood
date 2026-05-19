@@ -1,0 +1,49 @@
+# Git / Python artefacts
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environment (managed by uv)
+.venv/
+
+# Environment variables — never commit secrets
+.env
+
+# Django runtime files
+db.sqlite3
+*.sqlite3
+staticfiles/
+media/
+
+# Compiled translations
+*.mo
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Test artefacts
+.coverage
+coverage.xml
+htmlcov/
+.pytest_cache/
+
+# uv cache (local, not needed in image)
+.cache/
+
+# AI assistant files
+.claude.md
+.cursor/
+.windsurf/
+
+# Project planning
+project.md

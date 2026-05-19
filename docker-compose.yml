@@ -1,0 +1,33 @@
+# Docker Compose for Wynwood House — Development
+#
+# This file provides ONLY the database service.
+# The Django development server runs locally with `uv run python manage.py runserver`.
+#
+# Port 5433 avoids conflicts with a local PostgreSQL instance on the default 5432.
+#
+# Usage:
+#   docker compose up -d          start the database in background
+#   docker compose down           stop the container
+#   docker compose down -v        stop and wipe all data (careful!)
+#   docker compose logs -f db     follow database logs
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: wynwood
+      POSTGRES_USER: wynwood
+      POSTGRES_PASSWORD: wynwood_dev
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wynwood -d wynwood"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:

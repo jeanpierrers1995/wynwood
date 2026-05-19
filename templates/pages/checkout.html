@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Checkout' %}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top:2rem;padding-bottom:4rem;">
+
+  <nav class="breadcrumb">
+    <a href="{% url 'properties:home' %}">{% trans 'Home' %}</a>
+    <span class="breadcrumb-sep">/</span>
+    <a href="{% url 'properties:detail' property.slug %}">{{ property.name }}</a>
+    <span class="breadcrumb-sep">/</span>
+    <span class="breadcrumb-active">{% trans 'Checkout' %}</span>
+  </nav>
+
+  <div style="display:grid;grid-template-columns:1fr 360px;gap:3rem;align-items:start;">
+
+    <div>
+      <h1 style="margin-bottom:.5rem;">{% trans 'Complete your booking' %}</h1>
+      <p style="color:var(--gray);margin-bottom:2rem;">{% trans 'Fill in your dates and number of guests to confirm the reservation.' %}</p>
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="{{ form.check_in.id_for_label }}">{% trans 'Check-in' %}</label>
+            {{ form.check_in }}
+            {% if form.check_in.errors %}
+              <div class="invalid-feedback">{{ form.check_in.errors.0 }}</div>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="{{ form.check_out.id_for_label }}">{% trans 'Check-out' %}</label>
+            {{ form.check_out }}
+            {% if form.check_out.errors %}
+              <div class="invalid-feedback">{{ form.check_out.errors.0 }}</div>
+            {% endif %}
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="{{ form.num_guests.id_for_label }}">
+            {% trans 'Number of guests' %} <span style="color:var(--gray);">({% trans 'max' %} {{ property.max_guests }})</span>
+          </label>
+          {{ form.num_guests }}
+          {% if form.num_guests.errors %}
+            <div class="invalid-feedback">{{ form.num_guests.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div style="background:var(--gold-bg);border-radius:var(--radius);padding:1rem 1.2rem;margin-bottom:1.5rem;">
+          <p class="label" style="margin-bottom:.4rem;color:var(--gold);">{% trans 'Your details' %}</p>
+          <p style="font-size:.9rem;color:var(--dark);">
+            {{ user.get_full_name }} &nbsp;·&nbsp; {{ user.email }}
+            {% if user.phone %}&nbsp;·&nbsp; {{ user.phone }}{% endif %}
+          </p>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg btn-full">
+          {% trans 'Proceed to payment' %} &rarr;
+        </button>
+        <p style="text-align:center;font-size:.78rem;color:var(--gray);margin-top:.8rem;">
+          {% trans "You won't be charged until payment is confirmed." %}
+        </p>
+      </form>
+    </div>
+
+    <div>
+      <div class="booking-summary">
+        {% with img=property.get_primary_image %}
+          {% if img %}
+            <div class="booking-summary-img">
+              <img src="{{ img.image.url }}" alt="{{ property.name }}">
+            </div>
+          {% endif %}
+        {% endwith %}
+        <div class="booking-summary-title">{{ property.name }}</div>
+        <div class="booking-summary-location">
+          <i class="bi bi-geo-alt"></i> {{ property.destination.name }}{% if property.district %} · {{ property.district }}{% endif %}
+        </div>
+        <hr class="booking-divider">
+        <div class="booking-row">
+          <span style="color:var(--gray);">{% trans 'Price per night' %}</span>
+          <span>US$ {{ property.price_per_night }}</span>
+        </div>
+        <div class="booking-row">
+          <span style="color:var(--gray);">{% trans 'Max guests' %}</span>
+          <span>{{ property.max_guests }}</span>
+        </div>
+        <div class="booking-row">
+          <span style="color:var(--gray);">{% trans 'Bedrooms' %}</span>
+          <span>{{ property.bedrooms }}</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

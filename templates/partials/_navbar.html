@@ -1,0 +1,66 @@
+{% load i18n %}
+<nav class="navbar">
+  <div class="navbar-inner">
+    <div class="navbar-left">
+      <a href="#" class="nav-link" id="navbar-menu-btn" aria-label="Menu" style="font-size: 2rem;">
+        <i class="bi bi-list"></i>
+      </a>
+      <a href="{% url 'properties:home' %}" class="navbar-logo">
+        wynwood<span>*</span>
+      </a>
+    </div>
+
+    <div class="navbar-center">
+      <a href="#" class="nav-link">{% trans 'Casa Wynwood' %}</a>
+      <a href="#" class="nav-link">{% trans 'The Collection*' %}</a>
+      <a href="#" class="nav-link">{% trans 'Publica tu propiedad' %}</a>
+      <a href="#" class="nav-link">{% trans 'Invierte en Bienes Raíces' %}</a>
+    </div>
+
+    <div class="navbar-right">
+      {% if user.is_authenticated %}
+        <a href="{% url 'accounts:profile' %}" class="nav-link">{{ user.first_name|default:user.email }}</a>
+        <form action="{% url 'accounts:logout' %}" method="post" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit" class="nav-link logout-btn">{% trans 'Sign out' %}</button>
+        </form>
+      {% else %}
+        <a href="{% url 'accounts:login' %}" class="nav-link">{% trans 'Iniciar sesión' %}</a>
+      {% endif %}
+
+      <div class="lang-divider"></div>
+
+      <div class="lang-switch">
+        {% get_current_language as LANGUAGE_CODE %}
+
+        <form method="post" id="lang-form-en" style="display:none;">
+          {% csrf_token %}
+          <input name="next" type="hidden" value="{% if request.path|slice:':4' == '/en/' %}{{ request.get_full_path|default:request.path }}{% else %}/en{{ request.get_full_path|default:request.path }}{% endif %}">
+          <input name="language" type="hidden" value="en">
+        </form>
+        <form method="post" id="lang-form-es" style="display:none;">
+          {% csrf_token %}
+          <input name="next" type="hidden" value="{% if request.path|slice:':4' == '/en/' %}/{{ request.get_full_path|default:request.path|slice:'4:' }}{% else %}{{ request.get_full_path|default:request.path }}{% endif %}">
+          <input name="language" type="hidden" value="es">
+        </form>
+        
+        <button type="button" onclick="submitLangForm('lang-form-en', 'en');" class="nav-link lang-btn {% if LANGUAGE_CODE == 'en' %}active{% endif %}">EN</button>
+        <span class="lang-sep">/</span>
+        <button type="button" onclick="submitLangForm('lang-form-es', 'es');" class="nav-link lang-btn {% if LANGUAGE_CODE == 'es' %}active{% endif %}">ES</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+function submitLangForm(formId, lang) {
+  const form = document.getElementById(formId);
+  let action = '/i18n/setlang/';
+  if (window.location.pathname.startsWith('/en/')) {
+    action = '/en/i18n/setlang/';
+  }
+  form.action = action;
+  form.submit();
+}
+</script>
+

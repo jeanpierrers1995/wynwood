@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{{ property.name }}{% endblock %}
+{% block meta_description %}{{ property.description|truncatechars:160 }}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top:2rem;padding-bottom:4rem;">
+
+  <nav class="breadcrumb" aria-label="breadcrumb">
+    <a href="{% url 'properties:home' %}">{% trans 'Home' %}</a>
+    <span class="breadcrumb-sep">/</span>
+    <a href="{% url 'properties:search' %}?city={{ property.destination.name }}">{{ property.destination.name }}</a>
+    <span class="breadcrumb-sep">/</span>
+    <span class="breadcrumb-active">{{ property.name }}</span>
+  </nav>
+
+  <div class="gallery-grid" style="margin-bottom:2.5rem;">
+    {% with images=property.images.all %}
+      {% if images %}
+        <div class="gallery-main">
+          <img src="{{ images.0.image.url }}" alt="{{ images.0.alt_text|default:property.name }}">
+        </div>
+        {% if images|length > 1 %}
+          <div class="gallery-thumb">
+            <img src="{{ images.1.image.url }}" alt="{{ images.1.alt_text|default:property.name }}">
+          </div>
+        {% endif %}
+        {% if images|length > 2 %}
+          <div class="gallery-thumb">
+            <img src="{{ images.2.image.url }}" alt="{{ images.2.alt_text|default:property.name }}">
+          </div>
+        {% endif %}
+      {% else %}
+        <div class="gallery-main" style="background:linear-gradient(135deg,#1a1a1a,#c99a2e);display:flex;align-items:center;justify-content:center;">
+          <i class="bi bi-house" style="font-size:4rem;color:rgba(255,255,255,.3);"></i>
+        </div>
+      {% endif %}
+    {% endwith %}
+  </div>
+  <div class="property-detail-layout">
+    <div>
+      <p class="label" style="margin-bottom:.4rem;">
+        <i class="bi bi-geo-alt"></i> {{ property.destination.name }}{% if property.district %} · {{ property.district }}{% endif %}
+      </p>
+      <h1 style="margin-bottom:.75rem;">{{ property.name }}</h1>
+
+      <div class="d-flex align-center gap-2" style="margin-bottom:2rem;font-size:.88rem;color:var(--gray);">
+        <span><i class="bi bi-people"></i> {{ property.max_guests }} {% trans 'guests' %}</span>
+        <span>·</span>
+        <span><i class="bi bi-door-closed"></i> {{ property.bedrooms }} {% trans 'bedrooms' %}</span>
+        <span>·</span>
+        <span><i class="bi bi-water"></i> {{ property.bathrooms }} {% trans 'bathrooms' %}</span>
+      </div>
+
+      <div style="margin-bottom:2.5rem;">
+        <h3 style="margin-bottom:.85rem;">{% trans 'About this property' %}</h3>
+        <p style="color:var(--dark);line-height:1.8;">{{ property.description }}</p>
+      </div>
+
+      {% if property.amenities.all %}
+        <div style="margin-bottom:2.5rem;">
+          <h3 style="margin-bottom:1rem;">{% trans 'Amenities' %}</h3>
+          <div class="amenities-grid">
+            {% for amenity in property.amenities.all %}
+              <div class="amenity-item">
+                <i class="bi {{ amenity.icon_class|default:'bi-check2' }}"></i>
+                {{ amenity.name }}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
+      <div>
+        <h3 style="margin-bottom:.75rem;">{% trans 'Location' %}</h3>
+        <p style="color:var(--gray);font-size:.9rem;">
+          <i class="bi bi-geo-alt"></i> {{ property.address }}
+        </p>
+      </div>
+    </div>
+
+    <div>
+      <div class="booking-widget">
+        <div class="booking-widget-price">
+          US$ {{ property.price_per_night }} <span>/ {% trans 'night' %}</span>
+        </div>
+
+        <form method="post" action="{% url 'bookings:checkout' property.slug %}">
+          {% csrf_token %}
+          <div class="form-group">
+            <label class="form-label" for="{{ form.check_in.id_for_label }}">{% trans 'Check-in' %}</label>
+            {{ form.check_in }}
+            {% if form.check_in.errors %}
+              <div class="invalid-feedback">{{ form.check_in.errors.0 }}</div>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="{{ form.check_out.id_for_label }}">{% trans 'Check-out' %}</label>
+            {{ form.check_out }}
+            {% if form.check_out.errors %}
+              <div class="invalid-feedback">{{ form.check_out.errors.0 }}</div>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="{{ form.num_guests.id_for_label }}">{% trans 'Guests' %}</label>
+            {{ form.num_guests }}
+            {% if form.num_guests.errors %}
+              <div class="invalid-feedback">{{ form.num_guests.errors.0 }}</div>
+            {% endif %}
+          </div>
+          <button type="submit" class="btn btn-primary btn-full btn-lg">
+            {% trans 'Reserve' %}
+          </button>
+        </form>
+
+        <p style="text-align:center;font-size:.78rem;color:var(--gray);margin-top:.8rem;">
+          {% trans "You won't be charged yet" %}
+        </p>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

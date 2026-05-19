@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Payment' %}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top:2rem;padding-bottom:4rem;">
+
+  <nav class="breadcrumb">
+    <a href="{% url 'properties:home' %}">{% trans 'Home' %}</a>
+    <span class="breadcrumb-sep">/</span>
+    <a href="{% url 'properties:detail' booking.property.slug %}">{{ booking.property.name }}</a>
+    <span class="breadcrumb-sep">/</span>
+    <span class="breadcrumb-active">{% trans 'Payment' %}</span>
+  </nav>
+
+  <div style="display:grid;grid-template-columns:1fr 360px;gap:3rem;align-items:start;">
+
+    <div>
+      <h1 style="margin-bottom:.5rem;">{% trans 'Payment' %}</h1>
+      <p style="color:var(--gray);margin-bottom:2rem;">{% trans 'Choose your payment method and complete the booking.' %}</p>
+
+      <form method="post" id="payment-form">
+        {% csrf_token %}
+
+        <div class="payment-methods">
+          {% for value, label in form.payment_method.field.choices %}
+            <label class="payment-option" for="id_payment_{{ value }}">
+              <input type="radio" name="payment_method" value="{{ value }}" id="id_payment_{{ value }}"
+                {% if form.payment_method.value == value or forloop.first %}checked{% endif %}>
+              <span style="flex:1;">
+                {% if value == 'card' %}<i class="bi bi-credit-card" style="margin-right:.4rem;"></i>{% endif %}
+                {% if value == 'apple_pay' %}<i class="bi bi-apple" style="margin-right:.4rem;"></i>{% endif %}
+                {% if value == 'google_pay' %}<i class="bi bi-google" style="margin-right:.4rem;"></i>{% endif %}
+                {{ label }}
+              </span>
+            </label>
+          {% endfor %}
+        </div>
+
+        <div id="card-fields">
+          <div class="form-group">
+            <label class="form-label" for="{{ form.card_number.id_for_label }}">{% trans 'Card number' %}</label>
+            {{ form.card_number }}
+            {% if form.card_number.errors %}<div class="invalid-feedback">{{ form.card_number.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="{{ form.card_expiry.id_for_label }}">{% trans 'Expiry date' %}</label>
+              {{ form.card_expiry }}
+              {% if form.card_expiry.errors %}<div class="invalid-feedback">{{ form.card_expiry.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="{{ form.card_cvv.id_for_label }}">CVV</label>
+              {{ form.card_cvv }}
+              {% if form.card_cvv.errors %}<div class="invalid-feedback">{{ form.card_cvv.errors.0 }}</div>{% endif %}
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="{{ form.card_holder.id_for_label }}">{% trans 'Cardholder name' %}</label>
+            {{ form.card_holder }}
+            {% if form.card_holder.errors %}<div class="invalid-feedback">{{ form.card_holder.errors.0 }}</div>{% endif %}
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg btn-full" style="margin-top:.5rem;">
+          <i class="bi bi-lock"></i> {% trans 'Complete booking' %}
+        </button>
+        <p style="text-align:center;font-size:.75rem;color:var(--gray);margin-top:.7rem;">
+          <i class="bi bi-shield-check"></i> {% trans 'Your payment information is secure and encrypted.' %}
+        </p>
+      </form>
+    </div>
+
+    <div>
+      <div class="booking-summary">
+        {% with img=booking.property.get_primary_image %}
+          {% if img %}
+            <div class="booking-summary-img">
+              <img src="{{ img.image.url }}" alt="{{ booking.property.name }}">
+            </div>
+          {% endif %}
+        {% endwith %}
+        <div class="booking-summary-title">{{ booking.property.name }}</div>
+        <div class="booking-summary-location">
+          <i class="bi bi-geo-alt"></i> {{ booking.property.destination.name }}
+        </div>
+        <hr class="booking-divider">
+        <div class="booking-row">
+          <span style="color:var(--gray);">{% trans 'Check-in' %}</span>
+          <span>{{ booking.check_in }}</span>
+        </div>
+        <div class="booking-row">
+          <span style="color:var(--gray);">{% trans 'Check-out' %}</span>
+          <span>{{ booking.check_out }}</span>
+        </div>
+        <div class="booking-row">
+          <span style="color:var(--gray);">{% trans 'Guests' %}</span>
+          <span>{{ booking.num_guests }}</span>
+        </div>
+        <div class="booking-row">
+          <span style="color:var(--gray);">{{ booking.nights }} {% trans 'nights' %} × US$ {{ booking.property.price_per_night }}</span>
+          <span>US$ {{ booking.total_price }}</span>
+        </div>
+        <div class="booking-row booking-total">
+          <span>{% trans 'Total' %}</span>
+          <span>US$ {{ booking.total_price }}</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleCardFields() {
+  const selected = document.querySelector('input[name="payment_method"]:checked');
+  const cardFields = document.getElementById('card-fields');
+  if (cardFields) {
+    cardFields.style.display = (selected && selected.value === 'card') ? '' : 'none';
+  }
+}
+document.querySelectorAll('input[name="payment_method"]').forEach(r => {
+  r.addEventListener('change', toggleCardFields);
+});
+toggleCardFields();
+</script>
+{% endblock %}

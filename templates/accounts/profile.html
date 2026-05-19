@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'My profile' %}{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container" style="max-width:860px;">
+    <div class="d-flex align-center gap-2" style="margin-bottom:2rem;">
+      <div style="width:56px;height:56px;border-radius:50%;background:var(--gold);color:var(--white);display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-size:1.4rem;letter-spacing:.1em;flex-shrink:0;">
+        {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+      </div>
+      <div>
+        <h2 style="margin:0;">{{ user.get_full_name }}</h2>
+        <p style="color:var(--gray);font-size:.88rem;margin:0;">{{ user.email }}</p>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;background:var(--white);border:1.5px solid var(--gray-light);border-radius:var(--radius);padding:1.5rem;margin-bottom:2rem;">
+      <div>
+        <div class="label">{% trans 'Phone' %}</div>
+        <div>{{ user.phone|default:"—" }}</div>
+      </div>
+      <div>
+        <div class="label">{% trans 'Country' %}</div>
+        <div>{{ user.country|default:"—" }}</div>
+      </div>
+      <div>
+        <div class="label">{% trans 'Member since' %}</div>
+        <div>{{ user.date_joined|date:"F Y" }}</div>
+      </div>
+      <div>
+        <div class="label">{% trans 'Total bookings' %}</div>
+        <div>{{ bookings|length }}</div>
+      </div>
+    </div>
+
+    <h3 style="margin-bottom:1.2rem;">{% trans 'Booking history' %}</h3>
+    {% if bookings %}
+      {% for booking in bookings %}
+        <div style="background:var(--white);border:1.5px solid var(--gray-light);border-radius:var(--radius);padding:1.2rem;margin-bottom:.85rem;display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-weight:700;margin-bottom:.2rem;">{{ booking.property.name }}</div>
+            <div style="font-size:.82rem;color:var(--gray);">
+              {{ booking.check_in }} → {{ booking.check_out }} · {{ booking.num_guests }} {% trans 'guests' %}
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-weight:700;">US$ {{ booking.total_price }}</div>
+            <span style="font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;
+              {% if booking.status == 'confirmed' %}color:var(--success);{% elif booking.status == 'cancelled' %}color:var(--error);{% else %}color:var(--gold);{% endif %}">
+              {{ booking.get_status_display }}
+            </span>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p style="color:var(--gray);">{% trans 'No bookings yet.' %} <a href="{% url 'properties:search' %}" style="color:var(--black);text-decoration:underline;">{% trans 'Start exploring' %}</a></p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% load i18n %}
+{% with img=property.get_primary_image %}
+<a href="{% url 'properties:detail' property.slug %}" class="property-card" data-category="{{ property.category }}">
+  <div class="property-card-img">
+    {% if img %}
+      <img src="{{ img.image.url }}" alt="{{ img.alt_text|default:property.name }}" loading="lazy">
+    {% else %}
+      <div style="width:100%;height:100%;background:linear-gradient(135deg,#1a1a1a 0%,#c99a2e 100%);display:flex;align-items:center;justify-content:center;">
+        <i class="bi bi-house" style="font-size:2.5rem;color:rgba(255,255,255,.4);"></i>
+      </div>
+    {% endif %}
+    {% if property.is_featured %}
+      <span class="card-badge">{% trans 'Featured' %}</span>
+    {% endif %}
+    <button class="card-fav" aria-label="{% trans 'Save property' %}" onclick="event.preventDefault();">
+      <i class="bi bi-heart"></i>
+    </button>
+  </div>
+  <div class="property-card-body">
+    <div class="card-location">
+      <i class="bi bi-geo-alt"></i> {{ property.destination.name }}{% if property.district %} · {{ property.district }}{% endif %}
+    </div>
+    <div class="card-title">{{ property.name }}</div>
+    <div class="card-price">
+      US$ {{ property.price_per_night }} <span>/ {% trans 'night' %}</span>
+    </div>
+    <div class="card-amenities">
+      <span><i class="bi bi-people"></i> {{ property.max_guests }} {% trans 'guests' %}</span>
+      <span><i class="bi bi-door-closed"></i> {{ property.bedrooms }} {% trans 'bed' %}</span>
+      <span><i class="bi bi-water"></i> {{ property.bathrooms }} {% trans 'bath' %}</span>
+    </div>
+  </div>
+</a>
+{% endwith %}

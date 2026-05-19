@@ -1,0 +1,50 @@
+{% load i18n %}
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo">wynwood<span>*</span> house</div>
+      <p class="footer-tagline">{% trans 'Home experience. Hotel quality.' %}<br>{% trans 'Premium rentals across Latin America and Spain.' %}</p>
+    </div>
+    <div>
+      <div class="footer-heading">{% trans 'Explore' %}</div>
+      <ul class="footer-links">
+        <li><a href="{% url 'properties:home' %}">{% trans 'Home' %}</a></li>
+        <li><a href="{% url 'properties:search' %}">{% trans 'Search properties' %}</a></li>
+        <li><a href="{% url 'bookings:my-bookings' %}">{% trans 'My bookings' %}</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-heading">{% trans 'Account' %}</div>
+      <ul class="footer-links">
+        {% if user.is_authenticated %}
+          <li><a href="{% url 'accounts:profile' %}">{% trans 'My profile' %}</a></li>
+          <li>
+            <form action="{% url 'accounts:logout' %}" method="post" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit" style="background:none;border:none;color:rgba(255,255,255,.6);font-size:.85rem;cursor:pointer;padding:0;font-family:inherit;">{% trans 'Sign out' %}</button>
+            </form>
+          </li>
+        {% else %}
+          <li><a href="{% url 'accounts:login' %}">{% trans 'Sign in' %}</a></li>
+          <li><a href="{% url 'accounts:register' %}">{% trans 'Create account' %}</a></li>
+        {% endif %}
+      </ul>
+    </div>
+    <div>
+      <div class="footer-heading">{% trans 'Contact' %}</div>
+      <ul class="footer-links">
+        <li><a href="mailto:hello@wynwoodhouse.com">hello@wynwoodhouse.com</a></li>
+        <li><a href="#">{% trans 'WhatsApp' %}</a></li>
+        <li><a href="#">Instagram</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; {% now "Y" %} Wynwood House. {% trans 'All rights reserved.' %}</span>
+    <div class="social-links">
+      <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+      <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+      <a href="#" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+    </div>
+  </div>
+</footer>

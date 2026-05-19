@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Booking Confirmed — Wynwood House</title>
+<style>
+  body { margin:0; padding:0; background:#FAFAFA; font-family:'Helvetica Neue',Arial,sans-serif; color:#1A1A1A; }
+  .wrapper { max-width:580px; margin:40px auto; background:#FFFFFF; border-radius:4px; overflow:hidden; box-shadow:0 2px 16px rgba(0,0,0,.08); }
+  .header { background:#1A1A1A; padding:2rem; text-align:center; }
+  .logo { font-size:1.3rem; letter-spacing:.2em; text-transform:uppercase; color:#FFFFFF; font-weight:700; }
+  .logo span { color:#C99A2E; }
+  .body { padding:2.5rem 2rem; }
+  .icon-wrap { text-align:center; margin-bottom:1.5rem; }
+  .icon-circle { display:inline-block; width:60px; height:60px; border-radius:50%; background:#E8F5E9; line-height:60px; font-size:1.8rem; text-align:center; }
+  h1 { font-size:1.6rem; text-align:center; margin:0 0 .5rem; letter-spacing:.1em; text-transform:uppercase; }
+  p  { font-size:.95rem; color:#666; line-height:1.7; margin:.5rem 0; }
+  .ref { text-align:center; background:#F5E6B8; color:#C99A2E; font-weight:700; font-size:.85rem; letter-spacing:.1em; padding:.4rem 1rem; border-radius:2px; display:inline-block; margin:.5rem auto 1.5rem; }
+  .ref-wrap { text-align:center; }
+  table { width:100%; border-collapse:collapse; margin:1.5rem 0; font-size:.9rem; }
+  td { padding:.55rem 0; border-bottom:1px solid #E5E5E5; }
+  td:last-child { text-align:right; font-weight:600; }
+  .total td { font-size:1rem; font-weight:700; border-top:2px solid #1A1A1A; border-bottom:none; padding-top:.8rem; }
+  .cta { display:block; background:#1A1A1A; color:#FFFFFF; text-decoration:none; text-align:center; padding:.85rem 2rem; border-radius:4px; font-size:.88rem; letter-spacing:.1em; text-transform:uppercase; font-weight:700; margin:1.5rem 0 0; }
+  .footer { background:#F5F3EE; padding:1.2rem 2rem; text-align:center; font-size:.78rem; color:#999; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="header">
+    <div class="logo">wynwood<span>*</span> house</div>
+  </div>
+  <div class="body">
+    <div class="icon-wrap"><div class="icon-circle">✓</div></div>
+    <h1>Booking Confirmed!</h1>
+    <p style="text-align:center;">Hi {{ booking.guest.first_name }},<br>your reservation is confirmed. See you soon!</p>
+    <div class="ref-wrap"><span class="ref">Booking #{{ booking.pk }}</span></div>
+
+    <table>
+      <tr><td style="color:#666;">Property</td><td>{{ booking.property.name }}</td></tr>
+      <tr><td style="color:#666;">Destination</td><td>{{ booking.property.destination.name }}</td></tr>
+      <tr><td style="color:#666;">Check-in</td><td>{{ booking.check_in }}</td></tr>
+      <tr><td style="color:#666;">Check-out</td><td>{{ booking.check_out }}</td></tr>
+      <tr><td style="color:#666;">Guests</td><td>{{ booking.num_guests }}</td></tr>
+      <tr><td style="color:#666;">Nights</td><td>{{ booking.nights }}</td></tr>
+      <tr class="total"><td>Total</td><td>US$ {{ booking.total_price }}</td></tr>
+    </table>
+
+    <a href="http://wynwoodhouse.com" class="cta">Explore more properties</a>
+  </div>
+  <div class="footer">
+    &copy; {% now "Y" %} Wynwood House · hello@wynwoodhouse.com<br>
+    This email was sent because you made a booking on wynwoodhouse.com.
+  </div>
+</div>
+</body>
+</html>
