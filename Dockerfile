@@ -29,7 +29,7 @@ ENV PATH="/app/.venv/bin:$PATH" \
 COPY . .
 
 ARG SECRET_KEY=build-time-placeholder-not-used-in-runtime
-RUN python manage.py collectstatic --no-input --settings=config.settings.production
+RUN DATABASE_URL=sqlite:///:memory: python manage.py collectstatic --no-input --settings=config.settings.production
 
 EXPOSE 8000
 
