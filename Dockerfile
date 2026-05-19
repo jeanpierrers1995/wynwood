@@ -7,7 +7,7 @@ WORKDIR /app
 
 COPY pyproject.toml uv.lock ./
 
-RUN uv sync --frozen --no-group dev --no-editable
+RUN uv sync --frozen --no-editable --group prod
 
 FROM python:3.12-slim
 
