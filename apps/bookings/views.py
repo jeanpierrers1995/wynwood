@@ -122,12 +122,11 @@ class PaymentView(LoginRequiredMixin, FormView):
         payment_method = form.cleaned_data["payment_method"]
         additional_services = form.cleaned_data.get("additional_services", [])
 
-        Booking.objects.filter(pk=self.booking.pk).update(
-            status=Booking.STATUS_CONFIRMED,
-            payment_method=payment_method,
-        )
+        self.booking.status = Booking.STATUS_CONFIRMED
+        self.booking.payment_method = payment_method
+        self.booking.save()
 
-        confirmed_booking = Booking.objects.get(pk=self.booking.pk)
+        confirmed_booking = self.booking
         
         subtotal = Decimal(str(confirmed_booking.total_price))
         
@@ -142,10 +141,6 @@ class PaymentView(LoginRequiredMixin, FormView):
         final_total = (subtotal + vat + city_tax).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
         confirmed_booking.total_price = final_total
         confirmed_booking.save(update_fields=["total_price"])
-
-        from django.db.models.signals import post_save
-
-        post_save.send(sender=Booking, instance=confirmed_booking, created=False)
 
         return redirect(
             reverse("bookings:confirmation", kwargs={"booking_id": self.booking.pk})

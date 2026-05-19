@@ -9,3 +9,4 @@ class NotificationsConfig(AppConfig):
 
     def ready(self) -> None:
         """Import signal handlers so they are registered at startup."""
+        import apps.notifications.signals  # noqa
