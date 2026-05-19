@@ -369,25 +369,6 @@ uv run python manage.py collectstatic --no-input --settings=config.settings.prod
 ```bash
 uv run gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3
 ```
-
-### Recommended platforms
-
-| Platform | Notes |
-|---|---|
-| **Railway** | `railway up` — PostgreSQL add-on available, auto-detects `Dockerfile` |
-| **Render** | Free tier PostgreSQL, `gunicorn` start command, WhiteNoise for static files |
-| **PythonAnywhere** | Manual setup — good for demos, free tier available |
-
-### Production checklist
-
-- [ ] `DEBUG=False`
-- [ ] `SECRET_KEY` is a long random string (not the dev default)
-- [ ] `ALLOWED_HOSTS` contains only your actual domain(s)
-- [ ] `DATABASE_URL` points to the production PostgreSQL instance
-- [ ] Email backend configured (SendGrid / Mailgun / SES)
-- [ ] Static files collected (`collectstatic`)
-- [ ] `uv sync --no-group dev` used in production builds
-
 ---
 
 ## Contributing
@@ -399,10 +380,6 @@ uv sync
 # Run checks before committing
 uv run ruff check . && uv run ruff format --check .
 ```
-
-Commits follow [Conventional Commits](https://www.conventionalcommits.org/):  
-`feat:`, `fix:`, `docs:`, `refactor:`, `chore:`
-
 ---
 
 ## Troubleshooting
@@ -467,21 +444,3 @@ This is normal in development with `DEBUG=True`. For production:
 ```bash
 uv run python manage.py collectstatic --no-input --settings=config.settings.production
 ```
-
-### Email not sending
-
-Emails are printed to the console during development. To configure SendGrid or another service, update `.env`:
-
-```dotenv
-EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
-EMAIL_HOST=smtp.sendgrid.net
-EMAIL_PORT=587
-EMAIL_USE_TLS=True
-EMAIL_HOST_USER=apikey
-EMAIL_HOST_PASSWORD=your-sendgrid-api-key
-DEFAULT_FROM_EMAIL=Wynwood House <noreply@wynwoodhouse.com>
-```
-
----
-
-*Wynwood House — &copy; 2026*
