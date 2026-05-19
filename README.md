@@ -8,6 +8,7 @@ A full-stack property reservation platform built with Django. Users can browse d
 
 ## Table of Contents
 
+- [Clone & Run](#-clone--run)
 - [Tech Stack](#tech-stack)
 - [Quick Start (Docker — Recommended)](#quick-start-docker--recommended)
 - [Manual Setup with uv](#manual-setup-with-uv)
@@ -18,6 +19,29 @@ A full-stack property reservation platform built with Django. Users can browse d
 - [Internationalization](#internationalization)
 - [Booking Flow](#booking-flow)
 - [Deployment](#deployment)
+- [Troubleshooting](#troubleshooting)
+
+---
+
+## 🚀 Clone & Run
+
+Get the project running in minutes:
+
+```bash
+git clone https://github.com/jeanpierrers1995/wynwood.git wynwood
+cd wynwood
+uv sync
+docker compose up -d
+uv run python manage.py migrate --settings=config.settings.development
+uv run python manage.py seed_data --settings=config.settings.development
+uv run python manage.py runserver --settings=config.settings.development
+```
+
+Open **http://127.0.0.1:8000** and log in with demo credentials:
+- **Guest:** `guest@wynwoodhouse.com` / `password123`
+- **Admin:** `admin@wynwoodhouse.com` / `admin123!`
+
+> See [Troubleshooting](#troubleshooting) if you encounter any issues.
 
 ---
 
@@ -55,7 +79,7 @@ This avoids build complexity in development while still providing an isolated, r
 
 ```bash
 # 1. Clone the repository
-git clone <repo-url> wynwood
+git clone https://github.com/jeanpierrers1995/wynwood.git wynwood
 cd wynwood
 
 # 2. Copy environment variables (defaults work out of the box)
@@ -103,7 +127,7 @@ Use this path if you prefer not to use Docker and already have PostgreSQL instal
 
 ```bash
 # 1. Clone the repository
-git clone <repo-url> wynwood
+git clone https://github.com/jeanpierrers1995/wynwood.git wynwood
 cd wynwood
 
 # 2. Install all dependencies (uv creates .venv automatically)
@@ -378,6 +402,85 @@ uv run ruff check . && uv run ruff format --check .
 
 Commits follow [Conventional Commits](https://www.conventionalcommits.org/):  
 `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`
+
+---
+
+## Troubleshooting
+
+### Port 5433 already in use
+
+If Docker fails because port 5433 is already in use:
+
+```bash
+# Option 1: Stop the existing container
+docker compose down
+
+# Option 2: Use a different port (edit docker-compose.yml)
+# Change "5433:5432" to "5434:5432" then update .env POSTGRES_PORT=5434
+```
+
+### `uv` command not found
+
+Install uv from the official source:
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+Then add uv to your PATH (usually automatic, but if not):
+
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+### ModuleNotFoundError or import errors
+
+Ensure your environment is properly activated:
+
+```bash
+# Reinstall dependencies
+uv sync
+
+# Verify .venv is active (should show in terminal prompt)
+# Then run commands with: uv run python manage.py ...
+```
+
+### Database connection errors
+
+Verify PostgreSQL container is running:
+
+```bash
+# Check if Docker container is up
+docker compose ps
+
+# If not running:
+docker compose up -d
+
+# Check logs for errors:
+docker compose logs -f db
+```
+
+### Static files not loading
+
+This is normal in development with `DEBUG=True`. For production:
+
+```bash
+uv run python manage.py collectstatic --no-input --settings=config.settings.production
+```
+
+### Email not sending
+
+Emails are printed to the console during development. To configure SendGrid or another service, update `.env`:
+
+```dotenv
+EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+EMAIL_HOST=smtp.sendgrid.net
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER=apikey
+EMAIL_HOST_PASSWORD=your-sendgrid-api-key
+DEFAULT_FROM_EMAIL=Wynwood House <noreply@wynwoodhouse.com>
+```
 
 ---
 
