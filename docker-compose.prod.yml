@@ -1,0 +1,52 @@
+services:
+  wynwood-db:
+    image: postgres:16-alpine
+    container_name: wynwood-db
+    restart: unless-stopped
+    # Nota: No exponemos el puerto 5432 al host para evitar conflictos con la DB de PharmaPOS (PostgreSQL 16 en host)
+    # y la DB de desarrollo (que usa 5433). Los contenedores se comunicarán internamente.
+    environment:
+      - POSTGRES_DB=${DB_NAME:-wynwood}
+      - POSTGRES_USER=${DB_USER:-wynwood}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - wynwood_postgres_data:/var/lib/postgresql/data
+    networks:
+      - wynwood-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-wynwood} -d ${DB_NAME:-wynwood}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  wynwood-backend:
+    build: .
+    image: wynwood-backend:latest
+    container_name: wynwood-backend
+    restart: unless-stopped
+    ports:
+      - "8001:8000"
+    expose:
+      - "8000"
+    env_file:
+      - .env.production
+    environment:
+      - DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@wynwood-db:5432/${DB_NAME}
+      - DJANGO_SETTINGS_MODULE=config.settings.production
+    depends_on:
+      wynwood-db:
+        condition: service_healthy
+    volumes:
+      - wynwood_static_volume:/app/staticfiles
+      - wynwood_media_volume:/app/media
+    networks:
+      - wynwood-network
+
+networks:
+  wynwood-network:
+    driver: bridge
+
+volumes:
+  wynwood_postgres_data:
+  wynwood_static_volume:
+  wynwood_media_volume:
