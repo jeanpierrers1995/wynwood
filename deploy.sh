@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Script de Despliegue Automatizado para Wynwood House
-# Este script asume que ya existe el archivo .env.production y docker-compose.prod.yml
+# Este script asume que ya existe el archivo .env y docker-compose.prod.yml
 
 echo "🚀 Iniciando despliegue de Wynwood..."
 
