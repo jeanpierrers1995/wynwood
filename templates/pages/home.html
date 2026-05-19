@@ -98,12 +98,6 @@
 
 <section class="section">
   <div class="container">
-    <div class="tabs" role="tablist">
-      <button class="tab-btn active" data-filter="all" role="tab" style="background:var(--black);color:var(--white);">{% trans 'Todas las propiedades' %}</button>
-      <button class="tab-btn" data-filter="collection" role="tab"><i class="bi bi-asterisk"></i> {% trans 'The Collection*' %}</button>
-      <button class="tab-btn" data-filter="casa_wynwood" role="tab"><i class="bi bi-house"></i> {% trans 'Casa Wynwood' %}</button>
-    </div>
-
     <div class="home-featured-layout">
       <div class="featured-info">
         <h2 style="font-size: clamp(1.8rem, 4vw, 2.2rem); margin-bottom: 1rem;">{% trans 'PROPIEDADES DESTACADAS' %}</h2>
@@ -112,33 +106,41 @@
         </p>
       </div>
       
-      {% if featured_properties %}
-        <div class="featured-grid">
-          {% for property in featured_properties|slice:":2" %}
-            <a href="{% url 'properties:detail' property.slug %}" class="featured-card">
-              {% with img=property.get_primary_image %}
-                {% if img %}
-                  <img src="{{ img.image.url }}" alt="{{ property.name }}">
-                {% else %}
-                  <div style="width:100%;height:100%;background:linear-gradient(135deg,#1a1a1a,#c99a2e);"></div>
-                {% endif %}
-              {% endwith %}
-              <div class="featured-card-overlay"></div>
-              <div class="featured-card-body">
-                <div class="featured-card-title">{{ property.name }}</div>
-                <div class="featured-card-details">
-                  <div><span class="featured-card-price">US$ {{ property.price_per_night }}</span> Noche</div>
-                  <div>{{ property.city }} - {{ property.destination.country }} <span style="margin-left:.5rem;"><i class="bi bi-person"></i> {{ property.max_guests }}</span></div>
-                </div>
-              </div>
-            </a>
-          {% endfor %}
+      <div class="featured-content">
+        <div class="tabs" role="tablist" style="justify-content: flex-start;">
+          <button class="tab-btn active" data-filter="all" role="tab" style="background:var(--black);color:var(--white);">{% trans 'Todas las propiedades' %}</button>
+          <button class="tab-btn" data-filter="collection" role="tab"><i class="bi bi-asterisk"></i> {% trans 'The Collection*' %}</button>
+          <button class="tab-btn" data-filter="casa_wynwood" role="tab"><i class="bi bi-house"></i> {% trans 'Casa Wynwood' %}</button>
         </div>
-      {% else %}
-        <p class="text-center" style="color:var(--gray);padding:3rem 0;">
-          {% trans 'No featured properties at the moment. Check back soon!' %}
-        </p>
-      {% endif %}
+
+        {% if featured_properties %}
+          <div class="featured-grid">
+            {% for property in featured_properties|slice:":2" %}
+              <a href="{% url 'properties:detail' property.slug %}" class="featured-card">
+                {% with img=property.get_primary_image %}
+                  {% if img %}
+                    <img src="{{ img.image.url }}" alt="{{ property.name }}">
+                  {% else %}
+                    <div style="width:100%;height:100%;background:linear-gradient(135deg,#1a1a1a,#c99a2e);"></div>
+                  {% endif %}
+                {% endwith %}
+                <div class="featured-card-overlay"></div>
+                <div class="featured-card-body">
+                  <div class="featured-card-title">{{ property.name }}</div>
+                  <div class="featured-card-details">
+                    <div><span class="featured-card-price">US$ {{ property.price_per_night }}</span> Noche</div>
+                    <div>{{ property.city }} - {{ property.destination.country }} <span style="margin-left:.5rem;"><i class="bi bi-person"></i> {{ property.max_guests }}</span></div>
+                  </div>
+                </div>
+              </a>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-center" style="color:var(--gray);padding:3rem 0;">
+            {% trans 'No featured properties at the moment. Check back soon!' %}
+          </p>
+        {% endif %}
+      </div>
     </div>
     <style>
       .featured-grid {
@@ -229,6 +231,85 @@
 
 <section class="section" style="padding-top: 0;">
   <div class="container">
+    <div class="events-layout">
+      <div class="events-images">
+        <img src="https://picsum.photos/seed/event2/400/500" alt="{% trans 'Detalle de evento' %}" class="event-img-overlay">
+        <img src="https://picsum.photos/seed/event1/600/800" alt="{% trans 'Eventos Wynwood' %}" class="event-img-main">
+      </div>
+      <div class="events-content">
+        <h2>{% trans 'DISFRUTA DE NUESTROS EVENTOS!' %}</h2>
+        <p>{% trans 'Vive tu experiencia al máximo mientras te sumerges en el vibrante mundo de los eventos Wynwood. Disfruta de arte, cultura e inspiración como nunca antes.' %}</p>
+        <a href="#" class="btn btn-primary" style="border-radius: 50px; padding: 1rem 2.5rem; font-size: 0.85rem; letter-spacing: 0.05em; font-weight: 500;">{% trans 'VER TODOS LOS EVENTOS' %}</a>
+      </div>
+    </div>
+    
+    <style>
+      .events-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2.5rem;
+        margin-bottom: 4rem;
+      }
+      .events-images {
+        position: relative;
+        width: 100%;
+        min-height: 450px;
+      }
+      .event-img-main {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 75%;
+        height: 80%;
+        object-fit: cover;
+        z-index: 1;
+      }
+      .event-img-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 48%;
+        height: 52%;
+        object-fit: cover;
+        z-index: 2;
+      }
+      .events-content {
+        background-color: #E2A91F;
+        padding: 4rem 3.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+      }
+      .events-content h2 {
+        font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+        margin-bottom: 1.2rem;
+        color: var(--black);
+        line-height: 1.1;
+        letter-spacing: 0.05em;
+      }
+      .events-content p {
+        color: var(--black);
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 2.5rem;
+        max-width: 95%;
+      }
+      @media (max-width: 991px) {
+        .events-layout {
+          grid-template-columns: 1fr;
+          gap: 2rem;
+          margin-bottom: 3rem;
+        }
+        .events-images {
+          min-height: 400px;
+        }
+        .events-content {
+          padding: 3rem 2rem;
+        }
+      }
+    </style>
+
     <h2 style="font-size: clamp(1.8rem, 4vw, 2.2rem); margin-bottom: 2rem;">BENEFICIOS DE WYNWOOD HOUSE</h2>
     <div class="benefits-layout">
       <div class="benefit-card">
