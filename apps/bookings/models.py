@@ -73,6 +73,17 @@ class Booking(models.Model):
         default=PAYMENT_CARD,
         verbose_name=_("Payment method"),
     )
+    additional_services = models.ManyToManyField(
+        "AdditionalService",
+        blank=True,
+        related_name="bookings",
+        verbose_name=_("Additional services"),
+    )
+    email = models.EmailField(blank=True, verbose_name=_("Email"))
+    phone = models.CharField(max_length=20, blank=True, verbose_name=_("Phone"))
+    discount_code = models.CharField(
+        max_length=50, blank=True, verbose_name=_("Discount code")
+    )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
 
@@ -135,14 +146,27 @@ class Booking(models.Model):
         """
         Run ``full_clean()`` and calculate the total price before saving.
 
-        The price is always recalculated from the current nightly rate,
-        ensuring it stays consistent with any price updates on the property.
+        The price includes:
+        - Base price (nights × price_per_night)
+        - Cleaning fee (fixed: $20)
+        - Additional services (sum of all selected services)
         """
         self.full_clean()
 
-        if self.check_in and self.check_out and self.property_id:
+        skip_price_calc = (
+            (kwargs.get("update_fields") and "total_price" in kwargs["update_fields"])
+            or self.status in [self.STATUS_CONFIRMED, self.STATUS_CANCELLED]
+        )
+
+        if not skip_price_calc and self.check_in and self.check_out and self.property_id:
+            from decimal import Decimal
+            
             nights = (self.check_out - self.check_in).days
-            self.total_price = nights * self.property.price_per_night
+            base_price = nights * self.property.price_per_night
+            
+            cleaning_fee = Decimal('20.00')
+
+            self.total_price = base_price + cleaning_fee
 
         super().save(*args, **kwargs)
 
@@ -156,3 +180,33 @@ class Booking(models.Model):
         """Return the number of nights for this stay."""
 
         return (self.check_out - self.check_in).days
+
+
+class AdditionalService(models.Model):
+    """
+    Additional services that guests can add to their booking.
+    
+    Examples: Flexible check-in/out, transport, grocery delivery, baby crib, etc.
+    """
+    name = models.CharField(max_length=200, verbose_name=_("Name"))
+    description = models.TextField(blank=True, verbose_name=_("Description"))
+    price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name=_("Price"),
+    )
+    image = models.ImageField(
+        upload_to="additional_services/",
+        blank=True,
+        verbose_name=_("Image"),
+    )
+    is_active = models.BooleanField(default=True, verbose_name=_("Active"))
+    order = models.PositiveIntegerField(default=0, verbose_name=_("Order"))
+
+    class Meta:
+        verbose_name = _("Additional Service")
+        verbose_name_plural = _("Additional Services")
+        ordering = ["order", "name"]
+
+    def __str__(self) -> str:
+        return f"{self.name} - US$ {self.price}"

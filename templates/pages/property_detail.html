@@ -5,32 +5,41 @@
 {% block meta_description %}{{ property.description|truncatechars:160 }}{% endblock %}
 
 {% block content %}
-<div class="container" style="padding-top:2rem;padding-bottom:4rem;">
+<div class="property-detail-page">
+  
+  <div class="container">
+    <nav class="breadcrumb" aria-label="breadcrumb">
+      <a href="{% url 'properties:home' %}">{% trans 'Home' %}</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href="{% url 'properties:search' %}?city={{ property.destination.name }}">{{ property.destination.name }}</a>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-active">{{ property.name }}</span>
+    </nav>
+  </div>
 
-  <nav class="breadcrumb" aria-label="breadcrumb">
-    <a href="{% url 'properties:home' %}">{% trans 'Home' %}</a>
-    <span class="breadcrumb-sep">/</span>
-    <a href="{% url 'properties:search' %}?city={{ property.destination.name }}">{{ property.destination.name }}</a>
-    <span class="breadcrumb-sep">/</span>
-    <span class="breadcrumb-active">{{ property.name }}</span>
-  </nav>
-
-  <div class="gallery-grid" style="margin-bottom:2.5rem;">
+  <div class="property-gallery">
     {% with images=property.images.all %}
       {% if images %}
         <div class="gallery-main">
           <img src="{{ images.0.image.url }}" alt="{{ images.0.alt_text|default:property.name }}">
         </div>
-        {% if images|length > 1 %}
-          <div class="gallery-thumb">
-            <img src="{{ images.1.image.url }}" alt="{{ images.1.alt_text|default:property.name }}">
-          </div>
-        {% endif %}
-        {% if images|length > 2 %}
-          <div class="gallery-thumb">
-            <img src="{{ images.2.image.url }}" alt="{{ images.2.alt_text|default:property.name }}">
-          </div>
-        {% endif %}
+        <div class="gallery-side">
+          {% if images|length > 1 %}
+            <div class="gallery-side-img">
+              <img src="{{ images.1.image.url }}" alt="{{ images.1.alt_text|default:property.name }}">
+            </div>
+          {% endif %}
+          {% if images|length > 2 %}
+            <div class="gallery-side-img">
+              <img src="{{ images.2.image.url }}" alt="{{ images.2.alt_text|default:property.name }}">
+            </div>
+          {% endif %}
+          {% if images|length > 3 %}
+            <div class="gallery-side-img">
+              <img src="{{ images.3.image.url }}" alt="{{ images.3.alt_text|default:property.name }}">
+            </div>
+          {% endif %}
+        </div>
       {% else %}
         <div class="gallery-main" style="background:linear-gradient(135deg,#1a1a1a,#c99a2e);display:flex;align-items:center;justify-content:center;">
           <i class="bi bi-house" style="font-size:4rem;color:rgba(255,255,255,.3);"></i>
@@ -38,88 +47,234 @@
       {% endif %}
     {% endwith %}
   </div>
-  <div class="property-detail-layout">
-    <div>
-      <p class="label" style="margin-bottom:.4rem;">
-        <i class="bi bi-geo-alt"></i> {{ property.destination.name }}{% if property.district %} · {{ property.district }}{% endif %}
-      </p>
-      <h1 style="margin-bottom:.75rem;">{{ property.name }}</h1>
 
-      <div class="d-flex align-center gap-2" style="margin-bottom:2rem;font-size:.88rem;color:var(--gray);">
-        <span><i class="bi bi-people"></i> {{ property.max_guests }} {% trans 'guests' %}</span>
-        <span>·</span>
-        <span><i class="bi bi-door-closed"></i> {{ property.bedrooms }} {% trans 'bedrooms' %}</span>
-        <span>·</span>
-        <span><i class="bi bi-water"></i> {{ property.bathrooms }} {% trans 'bathrooms' %}</span>
-      </div>
+  <div class="container">
+    <div class="property-detail-grid">
+      
+      <div class="property-info">
+        
+        <div class="property-header">
+          <h1 class="property-title">{{ property.name|upper }}</h1>
+          <p class="property-location">
+            {{ property.district }}, {{ property.destination.name }}, {{ property.destination.country|upper }}
+          </p>
+          <div class="property-meta">
+            <span>{{ property.max_guests }} INVITADOS</span>
+            <span class="meta-divider">&nbsp;|&nbsp;</span>
+            <span>{{ property.bedrooms }} HABITACIÓN</span>
+            <span class="meta-divider">&nbsp;|&nbsp;</span>
+            <span>{{ property.bedrooms }} CAMA</span>
+            <span class="meta-divider">&nbsp;|&nbsp;</span>
+            <span>{{ property.bathrooms }} BAÑO</span>
+          </div>
+        </div>
 
-      <div style="margin-bottom:2.5rem;">
-        <h3 style="margin-bottom:.85rem;">{% trans 'About this property' %}</h3>
-        <p style="color:var(--dark);line-height:1.8;">{{ property.description }}</p>
-      </div>
+        <hr class="property-divider">
 
-      {% if property.amenities.all %}
-        <div style="margin-bottom:2.5rem;">
-          <h3 style="margin-bottom:1rem;">{% trans 'Amenities' %}</h3>
-          <div class="amenities-grid">
-            {% for amenity in property.amenities.all %}
-              <div class="amenity-item">
-                <i class="bi {{ amenity.icon_class|default:'bi-check2' }}"></i>
-                {{ amenity.name }}
+        <div class="property-section">
+          <p class="property-description">{{ property.description }}</p>
+        </div>
+
+        <hr class="property-divider">
+
+        {% if property.amenities.all %}
+          <div class="property-section">
+            <h2 class="section-title">{% trans 'AMENITIES' %}</h2>
+            <div class="amenities-grid-modern">
+              {% for amenity in property.amenities.all %}
+                <div class="amenity-card">
+                  <i class="bi {{ amenity.icon_class|default:'bi-check2' }}"></i>
+                  <span>{{ amenity.name }}</span>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        <div class="property-section">
+          <h2 class="section-title">BEDROOMS</h2>
+          <div class="bedroom-info">
+            <div class="bedroom-item">
+              <strong>Bedroom 1</strong>
+              <i class="bi bi-bed"></i>
+              <p>1 Queen Bed</p>
+            </div>
+            {% if property.bedrooms > 1 %}
+              <div class="bedroom-item">
+                <strong>Bedroom 2</strong>
+                <i class="bi bi-bed"></i>
+                <p>1 Double Bed</p>
               </div>
-            {% endfor %}
+            {% endif %}
           </div>
         </div>
-      {% endif %}
-
-      <div>
-        <h3 style="margin-bottom:.75rem;">{% trans 'Location' %}</h3>
-        <p style="color:var(--gray);font-size:.9rem;">
-          <i class="bi bi-geo-alt"></i> {{ property.address }}
-        </p>
+        
+        <hr class="property-divider">
       </div>
-    </div>
 
-    <div>
-      <div class="booking-widget">
-        <div class="booking-widget-price">
-          US$ {{ property.price_per_night }} <span>/ {% trans 'night' %}</span>
+      <div class="booking-sidebar">
+        <div class="booking-widget">
+          
+          <div class="booking-tabs">
+            <button class="booking-tab active">DIARIO</button>
+            <button class="booking-tab">MENSUAL</button>
+          </div>
+
+          <div class="booking-widget-price">
+            US$ {{ property.price_per_night }} POR NOCHE
+          </div>
+
+          <form method="post" action="{% url 'bookings:checkout' property.slug %}" class="booking-form">
+            {% csrf_token %}
+            
+            <div class="form-group-modern">
+              <label class="form-label-modern">Llegada - Salida</label>
+              <div class="date-inputs-row">
+                <div class="date-input-item">
+                  <span class="date-label">Llegada</span>
+                  {{ form.check_in }}
+                </div>
+                <div class="date-input-item">
+                  <span class="date-label">Salida</span>
+                  {{ form.check_out }}
+                </div>
+              </div>
+              {% if form.check_in.errors %}
+                <div class="invalid-feedback">{{ form.check_in.errors.0 }}</div>
+              {% endif %}
+              {% if form.check_out.errors %}
+                <div class="invalid-feedback">{{ form.check_out.errors.0 }}</div>
+              {% endif %}
+            </div>
+
+            <div class="form-group-modern">
+              <label class="form-label-modern">Número de huéspedes</label>
+              {{ form.num_guests }}
+              {% if form.num_guests.errors %}
+                <div class="invalid-feedback">{{ form.num_guests.errors.0 }}</div>
+              {% endif %}
+            </div>
+
+            <div class="form-group-modern">
+              {{ form.email }}
+              {% if form.email.errors %}
+                <div class="invalid-feedback">{{ form.email.errors.0 }}</div>
+              {% endif %}
+            </div>
+
+            <div class="form-group-modern">
+              <label class="form-label-modern">Teléfono</label>
+              <div class="phone-input-row">
+                {{ form.phone }}
+              </div>
+              {% if form.phone.errors %}
+                <div class="invalid-feedback">{{ form.phone.errors.0 }}</div>
+              {% endif %}
+            </div>
+
+            <div class="form-group-modern">
+              {{ form.discount_code }}
+              {% if form.discount_code.errors %}
+                <div class="invalid-feedback">{{ form.discount_code.errors.0 }}</div>
+              {% endif %}
+            </div>
+            {% if nights and total %}
+            <div class="price-breakdown">
+              <div class="price-row">
+                <span>US$ {{ price_per_night|floatformat:2 }} x {{ nights }} noche{{ nights|pluralize }}</span>
+                <span>US$ {{ subtotal|floatformat:2 }}</span>
+              </div>
+              <div class="price-row">
+                <span>Tarifa de limpieza</span>
+                <span>US$ {{ cleaning_fee|floatformat:2 }}</span>
+              </div>
+              <div class="price-row-link">
+                <a href="#">Redime tus Wynwood Points</a>
+              </div>
+              <div class="price-row-total">
+                <strong>Total</strong>
+                <strong>US$ {{ total|floatformat:2 }}</strong>
+              </div>
+            </div>
+            {% endif %}
+
+            <button type="submit" class="btn-reservar">
+              RESERVAR AHORA
+            </button>
+          </form>
+
         </div>
-
-        <form method="post" action="{% url 'bookings:checkout' property.slug %}">
-          {% csrf_token %}
-          <div class="form-group">
-            <label class="form-label" for="{{ form.check_in.id_for_label }}">{% trans 'Check-in' %}</label>
-            {{ form.check_in }}
-            {% if form.check_in.errors %}
-              <div class="invalid-feedback">{{ form.check_in.errors.0 }}</div>
-            {% endif %}
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="{{ form.check_out.id_for_label }}">{% trans 'Check-out' %}</label>
-            {{ form.check_out }}
-            {% if form.check_out.errors %}
-              <div class="invalid-feedback">{{ form.check_out.errors.0 }}</div>
-            {% endif %}
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="{{ form.num_guests.id_for_label }}">{% trans 'Guests' %}</label>
-            {{ form.num_guests }}
-            {% if form.num_guests.errors %}
-              <div class="invalid-feedback">{{ form.num_guests.errors.0 }}</div>
-            {% endif %}
-          </div>
-          <button type="submit" class="btn btn-primary btn-full btn-lg">
-            {% trans 'Reserve' %}
-          </button>
-        </form>
-
-        <p style="text-align:center;font-size:.78rem;color:var(--gray);margin-top:.8rem;">
-          {% trans "You won't be charged yet" %}
-        </p>
       </div>
-    </div>
 
+    </div>
   </div>
 </div>
+
+<script>
+function updateGuests(change) {
+  const input = document.getElementById('id_num_guests');
+  let value = parseInt(input.value) || 1;
+  value = Math.max(1, Math.min({{ property.max_guests }}, value + change));
+  input.value = value;
+}
+
+let selectedServices = {};
+let baseTotal = {{ total|default:0 }};
+
+function toggleService(serviceId, price) {
+  const card = document.querySelector(`[data-service-id="${serviceId}"]`);
+  const button = card.querySelector('.btn-add-service');
+  
+  if (selectedServices[serviceId]) {
+    delete selectedServices[serviceId];
+    button.innerHTML = '<i class="bi bi-plus"></i> AGREGAR';
+    button.classList.remove('active');
+  } else {
+    selectedServices[serviceId] = {
+      id: serviceId,
+      price: parseFloat(price),
+      name: card.querySelector('.service-name').textContent
+    };
+    button.innerHTML = '<i class="bi bi-check"></i> AGREGADO';
+    button.classList.add('active');
+  }
+  
+  updateSelectedServicesDisplay();
+  updateTotal();
+}
+
+function updateSelectedServicesDisplay() {
+  const summary = document.getElementById('selected-services-summary');
+  const list = document.getElementById('selected-services-list');
+  const serviceIds = Object.keys(selectedServices);
+  
+  if (serviceIds.length === 0) {
+    summary.style.display = 'none';
+    list.innerHTML = '';
+    return;
+  }
+  
+  summary.style.display = 'block';
+  list.innerHTML = serviceIds.map(id => {
+    const service = selectedServices[id];
+    return `
+      <div class="selected-service-item">
+        <span>${service.name}</span>
+        <span>US$ ${service.price.toFixed(2)}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function updateTotal() {
+  const servicesTotal = Object.values(selectedServices).reduce((sum, service) => sum + service.price, 0);
+  const newTotal = baseTotal + servicesTotal;
+  
+  const totalElement = document.querySelector('.price-row-total strong:last-child');
+  if (totalElement && baseTotal > 0) {
+    totalElement.textContent = `US$ ${newTotal.toFixed(2)}`;
+  }
+}
+</script>
+
 {% endblock %}

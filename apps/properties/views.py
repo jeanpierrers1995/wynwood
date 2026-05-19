@@ -115,14 +115,27 @@ class PropertyDetailView(DetailView):
         context = super().get_context_data(**kwargs)
 
         from apps.bookings.forms import BookingForm
+        from apps.bookings.models import AdditionalService
+
+        user = self.request.user
+        user_email = ""
+        user_phone = ""
+        
+        if user.is_authenticated:
+            user_email = user.email or ""
+            user_phone = getattr(user, 'phone', '') or getattr(user, 'phone_number', '') or ""
 
         context["form"] = BookingForm(
             initial={
                 "check_in": self.request.GET.get("check_in", ""),
                 "check_out": self.request.GET.get("check_out", ""),
-                "num_guests": self.request.GET.get("guests", ""),
+                "num_guests": self.request.GET.get("guests", "1"),
+                "email": user_email,
+                "phone": user_phone,
             }
         )
+
+        context["additional_services"] = AdditionalService.objects.filter(is_active=True)
 
         booked_ranges = list(
             self.object.bookings.filter(
@@ -132,6 +145,30 @@ class PropertyDetailView(DetailView):
         )
 
         context["booked_ranges"] = booked_ranges
+        
+        check_in = self.request.GET.get("check_in", "")
+        check_out = self.request.GET.get("check_out", "")
+        
+        if check_in and check_out:
+            try:
+                from datetime import datetime as dt
+                date_in = dt.strptime(check_in, "%Y-%m-%d").date()
+                date_out = dt.strptime(check_out, "%Y-%m-%d").date()
+                nights = (date_out - date_in).days
+                
+                if nights > 0:
+                    price_per_night = float(self.object.price_per_night)
+                    subtotal = price_per_night * nights
+                    cleaning_fee = 20  # Fixed cleaning fee
+                    total = subtotal + cleaning_fee
+                    
+                    context["nights"] = nights
+                    context["price_per_night"] = price_per_night
+                    context["subtotal"] = subtotal
+                    context["cleaning_fee"] = cleaning_fee
+                    context["total"] = total
+            except (ValueError, TypeError):
+                pass
 
         return context
 

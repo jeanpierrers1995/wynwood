@@ -16,7 +16,7 @@ from django.views.generic.edit import FormView
 from apps.properties.models import Property
 
 from .forms import BookingForm, PaymentForm
-from .models import Booking
+from .models import Booking, AdditionalService
 from .services import BookingError, create_booking
 
 
@@ -112,11 +112,15 @@ class PaymentView(LoginRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["booking"] = self.booking
+        context["available_services"] = AdditionalService.objects.filter(is_active=True).order_by("order")
         return context
 
     def form_valid(self, form):
         """Confirm the booking and redirect to the confirmation page."""
+        from decimal import Decimal, ROUND_HALF_UP
+
         payment_method = form.cleaned_data["payment_method"]
+        additional_services = form.cleaned_data.get("additional_services", [])
 
         Booking.objects.filter(pk=self.booking.pk).update(
             status=Booking.STATUS_CONFIRMED,
@@ -124,6 +128,20 @@ class PaymentView(LoginRequiredMixin, FormView):
         )
 
         confirmed_booking = Booking.objects.get(pk=self.booking.pk)
+        
+        subtotal = Decimal(str(confirmed_booking.total_price))
+        
+        if additional_services:
+            confirmed_booking.additional_services.set(additional_services)
+            services_total = sum(Decimal(str(svc.price)) for svc in additional_services)
+            subtotal += services_total
+
+        vat = (subtotal * Decimal('0.16')).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+        city_tax = (subtotal * Decimal('0.03')).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+        
+        final_total = (subtotal + vat + city_tax).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+        confirmed_booking.total_price = final_total
+        confirmed_booking.save(update_fields=["total_price"])
 
         from django.db.models.signals import post_save
 
@@ -134,7 +152,19 @@ class PaymentView(LoginRequiredMixin, FormView):
         )
 
     def form_invalid(self, form):
-        messages.error(self.request, _("Please check your payment details."))
+        error_messages = []
+        for field, errors in form.errors.items():
+            if field != "__all__":
+                field_label = form.fields[field].label
+                field_errors = ', '.join(str(e) for e in errors)
+                error_messages.append(f"{field_label}: {field_errors}")
+
+        if error_messages:
+            for error in error_messages:
+                messages.error(self.request, error)
+        else:
+            messages.error(self.request, _("Please check your payment details."))
+
         return super().form_invalid(form)
 
 

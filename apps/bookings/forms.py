@@ -10,7 +10,7 @@ import datetime
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from .models import Booking
+from .models import Booking, AdditionalService
 
 
 class BookingForm(forms.Form):
@@ -41,6 +41,39 @@ class BookingForm(forms.Form):
         ),
         label=_("Guests"),
     )
+    email = forms.EmailField(
+        required=False,
+        widget=forms.EmailInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": _("Email address"),
+                "id": "id_email",
+            }
+        ),
+        label=_("Email"),
+    )
+    phone = forms.CharField(
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "+57 3001234567",
+                "id": "id_phone",
+            }
+        ),
+        label=_("Phone"),
+    )
+    discount_code = forms.CharField(
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": _("Discount code"),
+                "id": "id_discount_code",
+            }
+        ),
+        label=_("Discount code"),
+    )
 
     def clean(self):
         """Validate that check-in is before check-out and not in the past."""
@@ -69,6 +102,12 @@ class PaymentForm(forms.Form):
     APPLE = Booking.PAYMENT_APPLE_PAY
     GPAY = Booking.PAYMENT_GOOGLE_PAY
 
+    additional_services = forms.ModelMultipleChoiceField(
+        queryset=AdditionalService.objects.filter(is_active=True),
+        required=False,
+        widget=forms.CheckboxSelectMultiple
+    )
+
     payment_method = forms.ChoiceField(
         choices=Booking.PAYMENT_METHOD_CHOICES,
         initial=CARD,
@@ -80,7 +119,7 @@ class PaymentForm(forms.Form):
         required=False,
         widget=forms.TextInput(
             attrs={
-                "placeholder": "1234 5678 9012 3456",
+                "placeholder": "4111 1111 1111 1111",
                 "class": "form-control",
                 "autocomplete": "cc-number",
             }
@@ -92,7 +131,7 @@ class PaymentForm(forms.Form):
         required=False,
         widget=forms.TextInput(
             attrs={
-                "placeholder": "MM/YY",
+                "placeholder": "12/25",
                 "class": "form-control",
                 "autocomplete": "cc-exp",
             }
@@ -104,7 +143,7 @@ class PaymentForm(forms.Form):
         required=False,
         widget=forms.PasswordInput(
             attrs={
-                "placeholder": "CVV",
+                "placeholder": "123",
                 "class": "form-control",
                 "autocomplete": "cc-csc",
             }
@@ -116,12 +155,55 @@ class PaymentForm(forms.Form):
         required=False,
         widget=forms.TextInput(
             attrs={
-                "placeholder": _("Name on card"),
+                "placeholder": _("Jean Pierre Rivas"),
                 "class": "form-control",
                 "autocomplete": "cc-name",
             }
         ),
         label=_("Cardholder name"),
+    )
+    installments = forms.ChoiceField(
+        choices=[("1", _("1 installment")), ("3", _("3 installments")), ("6", _("6 installments"))],
+        required=False,
+        widget=forms.Select(attrs={"class": "form-control"}),
+        label=_("Select number of installments"),
+    )
+    address1 = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={"placeholder": _("Enter your address"), "class": "form-control"}),
+        label=_("Address")
+    )
+    address2 = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={"placeholder": _("Enter your address"), "class": "form-control"}),
+        label=_("Address 2 (optional)")
+    )
+    country = forms.ChoiceField(
+        choices=[
+            ("", _("Select your country")),
+            ("PE", _("Peru")),
+            ("CO", _("Colombia")),
+            ("US", _("United States")),
+            ("MX", _("Mexico"))
+        ],
+        required=False,
+        widget=forms.Select(attrs={"class": "form-control"}),
+        label=_("Country")
+    )
+    state = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={"placeholder": _("Enter your state"), "class": "form-control"}),
+        label=_("State/Region")
+    )
+    city = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={"placeholder": _("Enter city name"), "class": "form-control"}),
+        label=_("City")
+    )
+    zip_code = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={"placeholder": "00000", "class": "form-control"}),
+        label=_("Postal Code")
     )
 
     def clean(self):
