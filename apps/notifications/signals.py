@@ -3,6 +3,7 @@ from django.core.mail import send_mail
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.template.loader import render_to_string
+from decimal import Decimal, ROUND_HALF_UP
 
 from apps.bookings.models import Booking
 
@@ -10,6 +11,38 @@ from apps.bookings.models import Booking
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+def _build_booking_breakdown(instance: Booking) -> dict:
+    """Return the same monetary breakdown used in booking summary views."""
+    nights = instance.nights
+    price_per_night = Decimal(str(instance.property.price_per_night))
+    base_price = (price_per_night * nights).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    cleaning_fee = Decimal("20.00")
+
+    additional_services = list(instance.additional_services.all())
+    services_total = sum(
+        (Decimal(str(svc.price)) for svc in additional_services),
+        Decimal("0.00"),
+    ).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    subtotal = (base_price + cleaning_fee + services_total).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    vat = (subtotal * Decimal("0.16")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    city_tax = (subtotal * Decimal("0.03")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    total = (subtotal + vat + city_tax).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    return {
+        "nights": nights,
+        "price_per_night": price_per_night,
+        "base_price": base_price,
+        "cleaning_fee": cleaning_fee,
+        "additional_services": additional_services,
+        "services_total": services_total,
+        "subtotal": subtotal,
+        "vat": vat,
+        "city_tax": city_tax,
+        "total": total,
+    }
 
 @receiver(post_save, sender=Booking)
 def send_booking_confirmation_email(
@@ -49,9 +82,13 @@ def send_booking_confirmation_email(
 
     subject = f"Booking confirmation #{instance.pk} — Wynwood House"
 
+    breakdown = _build_booking_breakdown(instance)
     html_message = render_to_string(
         "emails/booking_confirmation.html",
-        {"booking": instance},
+        {
+            "booking": instance,
+            "breakdown": breakdown,
+        },
     )
 
     try:
@@ -75,8 +112,10 @@ def send_booking_confirmation_email(
             notification_type="booking_confirmed",
             subject=subject,
             body=(
-                f"Booking #{instance.pk} confirmed "
-                f"from {instance.check_in} to {instance.check_out}."
+                f"Booking #{instance.pk} confirmed from {instance.check_in} to {instance.check_out}. "
+                f"Base: US$ {breakdown['base_price']}, Cleaning: US$ {breakdown['cleaning_fee']}, "
+                f"Services: US$ {breakdown['services_total']}, VAT: US$ {breakdown['vat']}, "
+                f"City tax: US$ {breakdown['city_tax']}, Total: US$ {breakdown['total']}."
             ),
         )
 

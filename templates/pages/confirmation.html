@@ -20,34 +20,9 @@
       {% trans 'A confirmation email has been sent to' %} <strong>{{ booking.guest.email }}</strong>.
     </p>
 
-    <div style="background:var(--bg);border-radius:var(--radius);padding:1.2rem;text-align:left;margin-bottom:2rem;">
-      <div class="booking-row" style="margin-bottom:.4rem;">
-        <span class="label">{% trans 'Property' %}</span>
-        <span style="font-weight:700;">{{ booking.property.name }}</span>
-      </div>
-      <div class="booking-row" style="margin-bottom:.4rem;">
-        <span class="label">{% trans 'Destination' %}</span>
-        <span>{{ booking.property.destination.name }}</span>
-      </div>
-      <div class="booking-row" style="margin-bottom:.4rem;">
-        <span class="label">{% trans 'Check-in' %}</span>
-        <span>{{ booking.check_in }}</span>
-      </div>
-      <div class="booking-row" style="margin-bottom:.4rem;">
-        <span class="label">{% trans 'Check-out' %}</span>
-        <span>{{ booking.check_out }}</span>
-      </div>
-      <div class="booking-row" style="margin-bottom:.4rem;">
-        <span class="label">{% trans 'Guests' %}</span>
-        <span>{{ booking.num_guests }}</span>
-      </div>
-      <div class="booking-row booking-total" style="border-top:1px solid var(--gray-light);margin-top:.75rem;">
-        <span class="label">{% trans 'Total paid' %}</span>
-        <span>US$ {{ booking.total_price }}</span>
-      </div>
-    </div>
+    {% include 'partials/_booking_summary.html' with show_payment_section=True show_services=True %}
 
-    <div class="d-flex gap-2" style="justify-content:center;flex-wrap:wrap;">
+    <div class="d-flex gap-2" style="justify-content:center;flex-wrap:wrap;margin-top:2rem;">
       <a href="{% url 'bookings:my-bookings' %}" class="btn btn-outline">{% trans 'My bookings' %}</a>
       <a href="{% url 'properties:home' %}" class="btn btn-primary">{% trans 'Explore more' %}</a>
     </div>

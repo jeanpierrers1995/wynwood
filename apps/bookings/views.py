@@ -113,6 +113,7 @@ class PaymentView(LoginRequiredMixin, FormView):
         context = super().get_context_data(**kwargs)
         context["booking"] = self.booking
         context["available_services"] = AdditionalService.objects.filter(is_active=True).order_by("order")
+        context["additional_services"] = self.booking.additional_services.all()
         return context
 
     def form_valid(self, form):
@@ -122,25 +123,26 @@ class PaymentView(LoginRequiredMixin, FormView):
         payment_method = form.cleaned_data["payment_method"]
         additional_services = form.cleaned_data.get("additional_services", [])
 
-        self.booking.status = Booking.STATUS_CONFIRMED
-        self.booking.payment_method = payment_method
-        self.booking.save()
-
         confirmed_booking = self.booking
-        
-        subtotal = Decimal(str(confirmed_booking.total_price))
-        
-        if additional_services:
-            confirmed_booking.additional_services.set(additional_services)
-            services_total = sum(Decimal(str(svc.price)) for svc in additional_services)
-            subtotal += services_total
+        confirmed_booking.payment_method = payment_method
+
+        confirmed_booking.additional_services.set(additional_services)
+
+        base_total = Decimal(str(confirmed_booking.property.price_per_night)) * confirmed_booking.nights
+        cleaning_fee = Decimal("20.00")
+        services_total = sum(
+            (Decimal(str(svc.price)) for svc in additional_services),
+            Decimal("0.00"),
+        )
+        subtotal = base_total + cleaning_fee + services_total
 
         vat = (subtotal * Decimal('0.16')).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
         city_tax = (subtotal * Decimal('0.03')).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
         
         final_total = (subtotal + vat + city_tax).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
         confirmed_booking.total_price = final_total
-        confirmed_booking.save(update_fields=["total_price"])
+        confirmed_booking.status = Booking.STATUS_CONFIRMED
+        confirmed_booking.save(update_fields=["payment_method", "total_price", "status"])
 
         return redirect(
             reverse("bookings:confirmation", kwargs={"booking_id": self.booking.pk})
@@ -180,6 +182,11 @@ class ConfirmationView(LoginRequiredMixin, DetailView):
             guest=self.request.user,
             status=Booking.STATUS_CONFIRMED,
         )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["additional_services"] = self.object.additional_services.all()
+        return context
 
 
 class MyBookingsView(LoginRequiredMixin, ListView):

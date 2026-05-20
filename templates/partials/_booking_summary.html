@@ -1,0 +1,124 @@
+{% load i18n booking_utils %}
+{% booking_price_breakdown booking additional_services as breakdown %}
+<div class="booking-summary">
+    {% with img=booking.property.get_primary_image %}
+        {% if img %}
+            <div class="booking-summary-img">
+                <img src="{{ img.image.url }}" alt="{{ booking.property.name }}">
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="booking-summary-title">{{ booking.property.name }}</div>
+
+    <div class="booking-summary-location" style="margin-bottom: 1.5rem;">
+        {{ booking.property.destination.name }}
+    </div>
+
+    <div style="background: var(--bg); padding: 1.5rem; border-radius: 8px; margin: 0 -1.5rem -1.5rem -1.5rem;">
+        <hr class="booking-divider">
+
+        {# Dates Row #}
+        <div class="booking-row" style="background: #F8F9FA; padding: 0.8rem; border-radius: 4px; margin-bottom: 0.5rem;">
+            <span style="color:var(--black); font-weight: 500;">{% trans 'Dates' %}</span>
+            <span style="display: flex; align-items: center; gap: 0.5rem; color: var(--gray);">
+                {{ booking.check_in|date:"d M" }} - {{ booking.check_out|date:"d M" }}
+                {% if show_edit_links %}
+                    <a href="#" class="booking-summary-link"><i class="bi bi-pencil"></i></a>
+                {% endif %}
+            </span>
+        </div>
+
+        <div class="booking-row" style="background: #F8F9FA; padding: 0.8rem; border-radius: 4px; margin-bottom: 1.5rem;">
+            <span style="color:var(--black); font-weight: 500;">{% trans 'Guests' %}</span>
+            <span style="display: flex; align-items: center; gap: 0.5rem; color: var(--gray);">
+                {{ booking.num_guests }} {% trans 'people' %}
+                {% if show_edit_links %}
+                    <a href="#" class="booking-summary-link"><i class="bi bi-pencil"></i></a>
+                {% endif %}
+            </span>
+        </div>
+
+        <div class="booking-row">
+            <span style="text-decoration: underline; color:var(--gray);">
+                US$ {{ breakdown.price_per_night|floatformat:2 }} x {{ breakdown.nights }}
+            </span>
+            <span id="summary-base-price">US$ {{ breakdown.base_price|floatformat:2 }}</span>
+        </div>
+
+        <div class="booking-row">
+            <span style="text-decoration: underline; color:var(--gray);">{% trans 'Cleaning fee' %}</span>
+            <span>US$ {{ breakdown.cleaning_fee|floatformat:2 }}</span>
+        </div>
+
+        {# Additional Services Section #}
+        {% if show_services and additional_services %}
+            <div id="summary-additional-services" style="margin-top: 0.5rem;">
+                {% for service in additional_services %}
+                    <div class="booking-row">
+                        <span style="text-decoration: underline; color:var(--gray);">{{ service.name }}</span>
+                        <span>US$ {{ service.price|floatformat:2 }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% elif show_services %}
+            <div id="summary-additional-services"></div>
+        {% endif %}
+
+        <div style="margin-top: 1rem; margin-bottom: 0.5rem; font-weight: 700; font-size: 0.85rem;">
+            {% trans 'Taxes' %}
+        </div>
+        <div class="booking-row">
+            <span style="text-decoration: underline; color:var(--gray);">{% trans 'VAT' %} (16.00%)</span>
+            <span id="summary-vat">US$ {{ breakdown.vat|floatformat:2 }}</span>
+        </div>
+        <div class="booking-row">
+            <span style="text-decoration: underline; color:var(--gray);">{% trans 'City Tax' %} (3.00%)</span>
+            <span id="summary-city-tax">US$ {{ breakdown.city_tax|floatformat:2 }}</span>
+        </div>
+
+        <hr class="booking-divider" style="margin: 1.5rem 0;">
+
+        {# Total Row #}
+        <div class="booking-row booking-total" style="margin-top: 1rem; font-size: 1.1rem;">
+            <span>{% trans 'Total' %}</span>
+            <span id="summary-total">US$ {{ breakdown.total|floatformat:2 }}</span>
+        </div>
+
+        {% if show_payment_section %}
+            <div class="wynwood-points-notice">
+                <p style="color: var(--black); font-size: 0.85rem;">
+                    {% trans 'With this booking you are generating' %}
+                </p>
+                <div class="points-badge">
+                    <span id="summary-points">{{ breakdown.wynwood_points }}</span>
+                    {% trans 'Wynwood Points' %}
+                </div>
+                <p>
+                    <a href="#" style="color: #A0A0A0; font-size: 0.8rem; border-bottom: 1px dotted #A0A0A0; text-decoration: none;">
+                        {% trans 'Learn more about Wynwood Points' %}
+                    </a>
+                </p>
+            </div>
+        {% endif %}
+
+        {% if show_payment_section and booking.payment_method %}
+            <hr class="booking-divider" style="margin: 1.5rem 0;">
+            <div class="booking-row" style="margin-bottom: 0.5rem;">
+                <span style="color:var(--black); font-weight: 500;">{% trans 'Payment Method' %}</span>
+                <span style="color: var(--gray);">
+                    {% if booking.payment_method == 'card' %}
+                        {% trans 'Debit/Credit Card' %}
+                    {% elif booking.payment_method == 'apple_pay' %}
+                        Apple Pay
+                    {% elif booking.payment_method == 'google_pay' %}
+                        Google Pay
+                    {% else %}
+                        {{ booking.get_payment_method_display }}
+                    {% endif %}
+                </span>
+            </div>
+        {% endif %}
+    </div>
+</div>
+

@@ -42,8 +42,15 @@
       <tr><td style="color:#666;">Check-in</td><td>{{ booking.check_in }}</td></tr>
       <tr><td style="color:#666;">Check-out</td><td>{{ booking.check_out }}</td></tr>
       <tr><td style="color:#666;">Guests</td><td>{{ booking.num_guests }}</td></tr>
-      <tr><td style="color:#666;">Nights</td><td>{{ booking.nights }}</td></tr>
-      <tr class="total"><td>Total</td><td>US$ {{ booking.total_price }}</td></tr>
+      <tr><td style="color:#666;">Nights</td><td>{{ breakdown.nights }}</td></tr>
+      <tr><td style="color:#666;">US$ {{ breakdown.price_per_night|floatformat:2 }} x {{ breakdown.nights }}</td><td>US$ {{ breakdown.base_price|floatformat:2 }}</td></tr>
+      <tr><td style="color:#666;">Cleaning fee</td><td>US$ {{ breakdown.cleaning_fee|floatformat:2 }}</td></tr>
+      {% for service in breakdown.additional_services %}
+      <tr><td style="color:#666;">{{ service.name }}</td><td>US$ {{ service.price|floatformat:2 }}</td></tr>
+      {% endfor %}
+      <tr><td style="color:#666;">VAT (16.00%)</td><td>US$ {{ breakdown.vat|floatformat:2 }}</td></tr>
+      <tr><td style="color:#666;">City Tax (3.00%)</td><td>US$ {{ breakdown.city_tax|floatformat:2 }}</td></tr>
+      <tr class="total"><td>Total</td><td>US$ {{ breakdown.total|floatformat:2 }}</td></tr>
     </table>
 
     <a href="http://wynwoodhouse.com" class="cta">Explore more properties</a>

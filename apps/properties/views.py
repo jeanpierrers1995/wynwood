@@ -152,20 +152,29 @@ class PropertyDetailView(DetailView):
         if check_in and check_out:
             try:
                 from datetime import datetime as dt
+                from decimal import Decimal, ROUND_HALF_UP
+
                 date_in = dt.strptime(check_in, "%Y-%m-%d").date()
                 date_out = dt.strptime(check_out, "%Y-%m-%d").date()
                 nights = (date_out - date_in).days
                 
                 if nights > 0:
-                    price_per_night = float(self.object.price_per_night)
-                    subtotal = price_per_night * nights
-                    cleaning_fee = 20  # Fixed cleaning fee
-                    total = subtotal + cleaning_fee
-                    
+                    price_per_night = Decimal(str(self.object.price_per_night))
+                    base_price = price_per_night * nights
+                    cleaning_fee = Decimal('20.00')
+                    subtotal = base_price + cleaning_fee
+
+                    vat = (subtotal * Decimal('0.16')).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+                    city_tax = (subtotal * Decimal('0.03')).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+                    total = (subtotal + vat + city_tax).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+
                     context["nights"] = nights
                     context["price_per_night"] = price_per_night
-                    context["subtotal"] = subtotal
+                    context["base_price"] = base_price
                     context["cleaning_fee"] = cleaning_fee
+                    context["subtotal"] = subtotal
+                    context["vat"] = vat
+                    context["city_tax"] = city_tax
                     context["total"] = total
             except (ValueError, TypeError):
                 pass
