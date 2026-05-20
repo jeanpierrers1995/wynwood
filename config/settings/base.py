@@ -129,17 +129,15 @@ EMAIL_BACKEND = env(
     "EMAIL_BACKEND",
     default="django.core.mail.backends.console.EmailBackend",
 )
-
 EMAIL_HOST = env("EMAIL_HOST", default="")
-
 EMAIL_PORT = env.int("EMAIL_PORT", default=587)
-
 EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
-
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
-
 EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=True)
-
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="noreply@wynwoodhouse.com")
-
 SERVER_EMAIL = env("SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)
+
+SENDGRID_API_KEY = env("EMAIL_HOST_PASSWORD", default="")
+SENDGRID_SANDBOX_MODE_IN_DEBUG = env.bool("SENDGRID_SANDBOX_MODE_IN_DEBUG", default=True)
+SENDGRID_ECHO_TO_STDOUT = env.bool("SENDGRID_ECHO_TO_STDOUT", default=DEBUG)
+

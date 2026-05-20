@@ -34,7 +34,7 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 EMAIL_BACKEND = env(
     "EMAIL_BACKEND",
-    default="django.core.mail.backends.smtp.EmailBackend",
+    default="sendgrid_backend.SendgridBackend",
 )
 
 EMAIL_HOST = env("EMAIL_HOST", default="")
@@ -85,3 +85,5 @@ CSRF_COOKIE_DOMAIN = 'wynwood.jean-rivas.com'
 
 SESSION_COOKIE_NAME = 'wynwood_sessionid'
 CSRF_COOKIE_NAME = 'wynwood_csrftoken'
+
+SENDGRID_SANDBOX_MODE_IN_DEBUG = False
